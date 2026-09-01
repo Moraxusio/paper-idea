@@ -107,3 +107,41 @@ Class ids: 0=2FSK 1=4FSK 2=8-Tone 3=16-Tone 4=GMSK 5=FM 6=AM-DSB 7=Morse 8=PSK.
 
 ### Next
 Install torch and train baseline A (magnitude-only detector) before dual-stream fusion. RTX 4060 Laptop GPU is present; conda python currently has no torch.
+
+## 2026-09-02 — Step 4 env + smoke (02:45–02:53)
+
+### Python / torch
+- Base conda python is 3.14.7: **no torch wheels**. Do not use it for training.
+- `conda create` first failed on TOS; accepted:
+  - `conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main`
+  - `conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r`
+- Created env `mpfadet` at `/home/finnwe/miniconda3/envs/mpfadet` (Python 3.12.14).
+- Installed `torch==2.6.0+cu124`, `torchvision==0.21.0+cu124`.
+- GPU: RTX 4060 Laptop, 8.59 GB, CUDA available.
+
+### Smoke (02:52:55)
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python  # MagPhaseDataset + MPFADet dual=False
+```
+- batch mag `[2,3,512,512]`, labels 4 and 5 boxes
+- params **2.131 M**
+- preds P3/P4/P5: `[2,14,128,128] / [2,14,64,64] / [2,14,32,32]`
+- loss 12.76 (box 1.29, obj 0.70, cls 2.26, n_pos=27), backward OK, grad_norm 21.18
+- **SMOKE_OK** — train loop can start.
+
+Training command (baseline A, mag-only):
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --epochs 30 --batch 8 --imgsz 512 --out outputs/train_A
+```
+
+### 3-epoch smoke train (02:53:27–02:57)
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --epochs 3 --batch 8 --imgsz 512 --out outputs/train_A_smoke
+```
+| epoch | train box/obj/cls | val box/obj/cls | vloss | time |
+|---|---|---|---|---|
+| 1 | 0.870 / 0.101 / 2.063 | 0.786 / 0.023 / 2.006 | 8.447 | 95.9s |
+| 2 | 0.697 / 0.014 / 1.914 | 0.706 / 0.012 / 1.951 | 8.006 | 87.4s |
+| 3 | 0.648 / 0.011 / 1.798 | 0.688 / 0.011 / 1.958 | 7.973 | 82.5s |
+
+Loss is decreasing. Loop is healthy. Full 30-epoch A / dual F not started yet (~40 min/30 ep on this GPU).
