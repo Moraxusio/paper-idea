@@ -1,0 +1,12 @@
+time: 2026-09-02T02:37:40+08:00
+cmd: python scripts/step03_make_yolo.py
+python: /home/finnwe/miniconda3/bin/python
+
+phase count: 4000
+split seed=42
+train 3200 (bg2=2132, bg5=1068) boxes=16229
+val   400  (bg2=267,  bg5=133)  boxes=2009
+test  400  (bg2=267,  bg5=133)  boxes=2006
+n_missing_phase=0
+yaml: data/processed/data_MP_Multimodel.yaml
+mapping: y_up, crop=identity, cls x y w h

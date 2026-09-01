@@ -1,0 +1,66 @@
+{
+  "n_ids": 4000,
+  "missing_phase": [],
+  "n_missing_phase": 0,
+  "split_sizes": {
+    "train": 3200,
+    "val": 400,
+    "test": 400
+  },
+  "bg_counts": {
+    "train": {
+      "background_2": 2132,
+      "background_5": 1068
+    },
+    "val": {
+      "background_2": 267,
+      "background_5": 133
+    },
+    "test": {
+      "background_2": 267,
+      "background_5": 133
+    }
+  },
+  "class_counts": {
+    "train": {
+      "AM-DSB": 1651,
+      "Morse": 1865,
+      "8-Tone": 1902,
+      "FM": 1687,
+      "GMSK": 1962,
+      "PSK": 1551,
+      "2FSK": 1875,
+      "4FSK": 1977,
+      "16-Tone": 1759
+    },
+    "val": {
+      "Morse": 246,
+      "FM": 196,
+      "GMSK": 246,
+      "8-Tone": 209,
+      "PSK": 208,
+      "2FSK": 242,
+      "AM-DSB": 218,
+      "4FSK": 232,
+      "16-Tone": 212
+    },
+    "test": {
+      "8-Tone": 217,
+      "4FSK": 247,
+      "Morse": 246,
+      "AM-DSB": 212,
+      "FM": 205,
+      "GMSK": 234,
+      "16-Tone": 210,
+      "2FSK": 235,
+      "PSK": 200
+    }
+  },
+  "n_boxes": {
+    "train": 16229,
+    "val": 2009,
+    "test": 2006
+  },
+  "yaml": "/home/finnwe/project/paper/MPFADet/data/processed/data_MP_Multimodel.yaml",
+  "seed": 42
+}

@@ -43,3 +43,67 @@ Command:
 - y_up better on **399/400** images.
 - **Decision: y_up**. `x = DateTime/5e7*W`, `y = (1-Freq/5e4)*H`, crop = identity.
 - Locked for all later steps. Overlays in `outputs/step01_alignment/`.
+
+## 2026-09-02 — git init and Step 2 (I/Q + PEM)
+
+### Git
+- `git init` in `/home/finnwe/project/paper/MPFADet`, branch `main`.
+- Root commit `2f9e6eb`: repo skeleton, geometry helpers, Step-1 script and alignment report.
+
+### Step 2a I/Q convention probe (02:08:29+08:00)
+Command:
+```
+/home/finnwe/miniconda3/bin/python scripts/step02_probe_iq.py
+```
+Swept `swap × conj × fftshift` on 12 wavs. Metric: STFT log-mag vs PNG correlation, plus inside-box contrast.
+
+**Locked:** `swap=False, conj=False, fftshift=False`
+- mean corr to PNG = 0.597
+- mean box contrast = 57.66
+- All other conventions are near zero or negative.
+- WAV is 2ch int16, fs=50000, n=250000, I/Q uncorrelated (~0). Channel 0 = I, channel 1 = Q.
+- Frequency axis of `np.fft.fft` without fftshift already matches PNG `y_up` after flipping the frequency dimension for image display (`FLIP_FREQ=True`).
+
+Report: `logs/step02_iq_probe.json`
+
+### Step 2b PEM preview (02:11:45+08:00)
+Command:
+```
+/home/finnwe/miniconda3/bin/python scripts/step02_preview_pem.py
+```
+- 18 strips (2 per class): MAG | PEM | R=IF | G=Coh | B=Residual, boxes overlaid.
+- Inside-box channel contrast is consistently positive (IF/Residual ~30–60, Coh ~6–11).
+- Settings: n_fft=1024, hop=256, energy gate percentile=55, alpha=6.
+- Previews: `outputs/step02_preview/`
+- Report: `logs/step02_preview_report.json`
+
+### Step 2c batch PEM
+Command:
+```
+/home/finnwe/miniconda3/bin/python scripts/step02_generate_pem.py --skip-existing
+```
+Output: `data/processed/phase/{id}.png` (875x656 RGB, same geometry as magnitude PNG).
+
+Result (02:14:26–02:37:40, 1347 s ≈ 22.5 min):
+- 4000/4000 PEM files written, 0 failures.
+- `--skip-existing` made the JSON `n_ok=3995` because 5 files already existed from a 5-sample dry run; directory count is 4000.
+- Mean RGB ≈ (58.18, 10.80, 58.19): Coh channel is sparse (expected), IF/Residual occupy signal regions.
+
+## 2026-09-02 — Step 3 YOLO labels and split (02:37:40)
+
+Command:
+```
+/home/finnwe/miniconda3/bin/python scripts/step03_make_yolo.py
+```
+- Split seed=42, stratified by `background_2` / `background_5` (2:1).
+- train 3200 (2132/1068), val 400 (267/133), test 400 (267/133).
+- Boxes: train 16229, val 2009, test 2006. No missing phase.
+- Magnitude: `data/processed/images/{split}/{id}.png` → symlink to raw spectrogram PNG.
+- Phase: `data/processed/image/{split}/{id}.png` → symlink to PEM.
+- Labels: `data/processed/labels/{split}/{id}.txt` YOLO `cls x y w h` with y_up mapping.
+- YAML: `data/processed/data_MP_Multimodel.yaml` (also copied to `configs/`).
+
+Class ids: 0=2FSK 1=4FSK 2=8-Tone 3=16-Tone 4=GMSK 5=FM 6=AM-DSB 7=Morse 8=PSK.
+
+### Next
+Install torch and train baseline A (magnitude-only detector) before dual-stream fusion. RTX 4060 Laptop GPU is present; conda python currently has no torch.

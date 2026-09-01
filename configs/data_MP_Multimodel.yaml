@@ -1,0 +1,19 @@
+path: /home/finnwe/project/paper/MPFADet/data/processed
+train: images/train
+val: images/val
+test: images/test
+train_ir: image/train
+val_ir: image/val
+test_ir: image/test
+
+nc: 9
+names:
+    0: 2FSK
+    1: 4FSK
+    2: 8-Tone
+    3: 16-Tone
+    4: GMSK
+    5: FM
+    6: AM-DSB
+    7: Morse
+    8: PSK

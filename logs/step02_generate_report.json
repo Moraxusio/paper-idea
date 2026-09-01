@@ -1,0 +1,21 @@
+{
+  "n_ids": 4000,
+  "n_ok": 3995,
+  "n_fail": 0,
+  "failed": [],
+  "elapsed_sec": 1347.09,
+  "out_dir": "/home/finnwe/project/paper/MPFADet/data/processed/phase",
+  "settings": {
+    "n_fft": 1024,
+    "hop": 256,
+    "swap": false,
+    "conj": false,
+    "fftshift": false,
+    "flip_freq": true
+  },
+  "mean_rgb": [
+    58.17720115693406,
+    10.80226188266695,
+    58.193662261624844
+  ]
+}

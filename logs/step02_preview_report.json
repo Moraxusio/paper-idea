@@ -1,0 +1,528 @@
+{
+  "iq": {
+    "swap": false,
+    "conj": false,
+    "fftshift": false
+  },
+  "samples": [
+    {
+      "id": "background_2_1000",
+      "focus_class": "AM-DSB",
+      "classes": [
+        "8-Tone",
+        "AM-DSB",
+        "FM",
+        "GMSK"
+      ],
+      "stats": {
+        "if": {
+          "inside": 84.12578582763672,
+          "outside": 41.93706512451172,
+          "contrast": 42.188720703125
+        },
+        "coh": {
+          "inside": 15.629583358764648,
+          "outside": 7.789467811584473,
+          "contrast": 7.840115547180176
+        },
+        "resid": {
+          "inside": 84.15422058105469,
+          "outside": 41.978389739990234,
+          "contrast": 42.17583084106445
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/AM-DSB_background_2_1000_strip.png"
+    },
+    {
+      "id": "background_2_1001",
+      "focus_class": "AM-DSB",
+      "classes": [
+        "8-Tone",
+        "2FSK",
+        "Morse",
+        "AM-DSB",
+        "AM-DSB"
+      ],
+      "stats": {
+        "if": {
+          "inside": 93.4321517944336,
+          "outside": 46.42155456542969,
+          "contrast": 47.010597229003906
+        },
+        "coh": {
+          "inside": 17.56517219543457,
+          "outside": 8.585078239440918,
+          "contrast": 8.980093955993652
+        },
+        "resid": {
+          "inside": 92.89961242675781,
+          "outside": 46.45966720581055,
+          "contrast": 46.439945220947266
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/AM-DSB_background_2_1001_strip.png"
+    },
+    {
+      "id": "background_2_1000",
+      "focus_class": "FM",
+      "classes": [
+        "8-Tone",
+        "AM-DSB",
+        "FM",
+        "GMSK"
+      ],
+      "stats": {
+        "if": {
+          "inside": 84.12578582763672,
+          "outside": 41.93706512451172,
+          "contrast": 42.188720703125
+        },
+        "coh": {
+          "inside": 15.629583358764648,
+          "outside": 7.789467811584473,
+          "contrast": 7.840115547180176
+        },
+        "resid": {
+          "inside": 84.15422058105469,
+          "outside": 41.978389739990234,
+          "contrast": 42.17583084106445
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/FM_background_2_1000_strip.png"
+    },
+    {
+      "id": "background_2_1002",
+      "focus_class": "FM",
+      "classes": [
+        "AM-DSB",
+        "GMSK",
+        "8-Tone",
+        "FM",
+        "Morse"
+      ],
+      "stats": {
+        "if": {
+          "inside": 77.66706848144531,
+          "outside": 45.57932662963867,
+          "contrast": 32.08774185180664
+        },
+        "coh": {
+          "inside": 14.215484619140625,
+          "outside": 8.432526588439941,
+          "contrast": 5.782958030700684
+        },
+        "resid": {
+          "inside": 77.99903869628906,
+          "outside": 45.51502227783203,
+          "contrast": 32.48401641845703
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/FM_background_2_1002_strip.png"
+    },
+    {
+      "id": "background_2_1000",
+      "focus_class": "8-Tone",
+      "classes": [
+        "8-Tone",
+        "AM-DSB",
+        "FM",
+        "GMSK"
+      ],
+      "stats": {
+        "if": {
+          "inside": 84.12578582763672,
+          "outside": 41.93706512451172,
+          "contrast": 42.188720703125
+        },
+        "coh": {
+          "inside": 15.629583358764648,
+          "outside": 7.789467811584473,
+          "contrast": 7.840115547180176
+        },
+        "resid": {
+          "inside": 84.15422058105469,
+          "outside": 41.978389739990234,
+          "contrast": 42.17583084106445
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/8-Tone_background_2_1000_strip.png"
+    },
+    {
+      "id": "background_2_1001",
+      "focus_class": "8-Tone",
+      "classes": [
+        "8-Tone",
+        "2FSK",
+        "Morse",
+        "AM-DSB",
+        "AM-DSB"
+      ],
+      "stats": {
+        "if": {
+          "inside": 93.4321517944336,
+          "outside": 46.42155456542969,
+          "contrast": 47.010597229003906
+        },
+        "coh": {
+          "inside": 17.56517219543457,
+          "outside": 8.585078239440918,
+          "contrast": 8.980093955993652
+        },
+        "resid": {
+          "inside": 92.89961242675781,
+          "outside": 46.45966720581055,
+          "contrast": 46.439945220947266
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/8-Tone_background_2_1001_strip.png"
+    },
+    {
+      "id": "background_2_1000",
+      "focus_class": "GMSK",
+      "classes": [
+        "8-Tone",
+        "AM-DSB",
+        "FM",
+        "GMSK"
+      ],
+      "stats": {
+        "if": {
+          "inside": 84.12578582763672,
+          "outside": 41.93706512451172,
+          "contrast": 42.188720703125
+        },
+        "coh": {
+          "inside": 15.629583358764648,
+          "outside": 7.789467811584473,
+          "contrast": 7.840115547180176
+        },
+        "resid": {
+          "inside": 84.15422058105469,
+          "outside": 41.978389739990234,
+          "contrast": 42.17583084106445
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/GMSK_background_2_1000_strip.png"
+    },
+    {
+      "id": "background_2_1002",
+      "focus_class": "GMSK",
+      "classes": [
+        "AM-DSB",
+        "GMSK",
+        "8-Tone",
+        "FM",
+        "Morse"
+      ],
+      "stats": {
+        "if": {
+          "inside": 77.66706848144531,
+          "outside": 45.57932662963867,
+          "contrast": 32.08774185180664
+        },
+        "coh": {
+          "inside": 14.215484619140625,
+          "outside": 8.432526588439941,
+          "contrast": 5.782958030700684
+        },
+        "resid": {
+          "inside": 77.99903869628906,
+          "outside": 45.51502227783203,
+          "contrast": 32.48401641845703
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/GMSK_background_2_1002_strip.png"
+    },
+    {
+      "id": "background_2_1001",
+      "focus_class": "Morse",
+      "classes": [
+        "8-Tone",
+        "2FSK",
+        "Morse",
+        "AM-DSB",
+        "AM-DSB"
+      ],
+      "stats": {
+        "if": {
+          "inside": 93.4321517944336,
+          "outside": 46.42155456542969,
+          "contrast": 47.010597229003906
+        },
+        "coh": {
+          "inside": 17.56517219543457,
+          "outside": 8.585078239440918,
+          "contrast": 8.980093955993652
+        },
+        "resid": {
+          "inside": 92.89961242675781,
+          "outside": 46.45966720581055,
+          "contrast": 46.439945220947266
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/Morse_background_2_1001_strip.png"
+    },
+    {
+      "id": "background_2_1002",
+      "focus_class": "Morse",
+      "classes": [
+        "AM-DSB",
+        "GMSK",
+        "8-Tone",
+        "FM",
+        "Morse"
+      ],
+      "stats": {
+        "if": {
+          "inside": 77.66706848144531,
+          "outside": 45.57932662963867,
+          "contrast": 32.08774185180664
+        },
+        "coh": {
+          "inside": 14.215484619140625,
+          "outside": 8.432526588439941,
+          "contrast": 5.782958030700684
+        },
+        "resid": {
+          "inside": 77.99903869628906,
+          "outside": 45.51502227783203,
+          "contrast": 32.48401641845703
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/Morse_background_2_1002_strip.png"
+    },
+    {
+      "id": "background_2_1001",
+      "focus_class": "2FSK",
+      "classes": [
+        "8-Tone",
+        "2FSK",
+        "Morse",
+        "AM-DSB",
+        "AM-DSB"
+      ],
+      "stats": {
+        "if": {
+          "inside": 93.4321517944336,
+          "outside": 46.42155456542969,
+          "contrast": 47.010597229003906
+        },
+        "coh": {
+          "inside": 17.56517219543457,
+          "outside": 8.585078239440918,
+          "contrast": 8.980093955993652
+        },
+        "resid": {
+          "inside": 92.89961242675781,
+          "outside": 46.45966720581055,
+          "contrast": 46.439945220947266
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/2FSK_background_2_1001_strip.png"
+    },
+    {
+      "id": "background_2_1003",
+      "focus_class": "2FSK",
+      "classes": [
+        "4FSK",
+        "GMSK",
+        "FM",
+        "AM-DSB",
+        "16-Tone",
+        "2FSK"
+      ],
+      "stats": {
+        "if": {
+          "inside": 88.6353530883789,
+          "outside": 39.576725006103516,
+          "contrast": 49.05862808227539
+        },
+        "coh": {
+          "inside": 16.376371383666992,
+          "outside": 7.315130233764648,
+          "contrast": 9.061241149902344
+        },
+        "resid": {
+          "inside": 87.61558532714844,
+          "outside": 39.51353454589844,
+          "contrast": 48.10205078125
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/2FSK_background_2_1003_strip.png"
+    },
+    {
+      "id": "background_2_1003",
+      "focus_class": "4FSK",
+      "classes": [
+        "4FSK",
+        "GMSK",
+        "FM",
+        "AM-DSB",
+        "16-Tone",
+        "2FSK"
+      ],
+      "stats": {
+        "if": {
+          "inside": 88.6353530883789,
+          "outside": 39.576725006103516,
+          "contrast": 49.05862808227539
+        },
+        "coh": {
+          "inside": 16.376371383666992,
+          "outside": 7.315130233764648,
+          "contrast": 9.061241149902344
+        },
+        "resid": {
+          "inside": 87.61558532714844,
+          "outside": 39.51353454589844,
+          "contrast": 48.10205078125
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/4FSK_background_2_1003_strip.png"
+    },
+    {
+      "id": "background_2_1005",
+      "focus_class": "4FSK",
+      "classes": [
+        "4FSK",
+        "PSK",
+        "AM-DSB",
+        "PSK"
+      ],
+      "stats": {
+        "if": {
+          "inside": 89.62399291992188,
+          "outside": 40.11810302734375,
+          "contrast": 49.505889892578125
+        },
+        "coh": {
+          "inside": 16.6650390625,
+          "outside": 7.375878810882568,
+          "contrast": 9.289160251617432
+        },
+        "resid": {
+          "inside": 89.88101959228516,
+          "outside": 40.07246780395508,
+          "contrast": 49.80855178833008
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/4FSK_background_2_1005_strip.png"
+    },
+    {
+      "id": "background_2_1003",
+      "focus_class": "16-Tone",
+      "classes": [
+        "4FSK",
+        "GMSK",
+        "FM",
+        "AM-DSB",
+        "16-Tone",
+        "2FSK"
+      ],
+      "stats": {
+        "if": {
+          "inside": 88.6353530883789,
+          "outside": 39.576725006103516,
+          "contrast": 49.05862808227539
+        },
+        "coh": {
+          "inside": 16.376371383666992,
+          "outside": 7.315130233764648,
+          "contrast": 9.061241149902344
+        },
+        "resid": {
+          "inside": 87.61558532714844,
+          "outside": 39.51353454589844,
+          "contrast": 48.10205078125
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/16-Tone_background_2_1003_strip.png"
+    },
+    {
+      "id": "background_2_1007",
+      "focus_class": "16-Tone",
+      "classes": [
+        "AM-DSB",
+        "GMSK",
+        "PSK",
+        "16-Tone"
+      ],
+      "stats": {
+        "if": {
+          "inside": 102.31617736816406,
+          "outside": 40.138160705566406,
+          "contrast": 62.178016662597656
+        },
+        "coh": {
+          "inside": 18.933055877685547,
+          "outside": 7.405035972595215,
+          "contrast": 11.528019905090332
+        },
+        "resid": {
+          "inside": 102.08393096923828,
+          "outside": 40.10203170776367,
+          "contrast": 61.98189926147461
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/16-Tone_background_2_1007_strip.png"
+    },
+    {
+      "id": "background_2_1005",
+      "focus_class": "PSK",
+      "classes": [
+        "4FSK",
+        "PSK",
+        "AM-DSB",
+        "PSK"
+      ],
+      "stats": {
+        "if": {
+          "inside": 89.62399291992188,
+          "outside": 40.11810302734375,
+          "contrast": 49.505889892578125
+        },
+        "coh": {
+          "inside": 16.6650390625,
+          "outside": 7.375878810882568,
+          "contrast": 9.289160251617432
+        },
+        "resid": {
+          "inside": 89.88101959228516,
+          "outside": 40.07246780395508,
+          "contrast": 49.80855178833008
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/PSK_background_2_1005_strip.png"
+    },
+    {
+      "id": "background_2_1006",
+      "focus_class": "PSK",
+      "classes": [
+        "2FSK",
+        "GMSK",
+        "PSK",
+        "4FSK",
+        "GMSK",
+        "PSK"
+      ],
+      "stats": {
+        "if": {
+          "inside": 100.39190673828125,
+          "outside": 42.09776306152344,
+          "contrast": 58.29414367675781
+        },
+        "coh": {
+          "inside": 18.427677154541016,
+          "outside": 7.790405750274658,
+          "contrast": 10.637271404266357
+        },
+        "resid": {
+          "inside": 100.2221450805664,
+          "outside": 42.0710563659668,
+          "contrast": 58.15108871459961
+        }
+      },
+      "file": "/home/finnwe/project/paper/MPFADet/outputs/step02_preview/PSK_background_2_1006_strip.png"
+    }
+  ]
+}

@@ -1,0 +1,850 @@
+{
+  "n_fft": 1024,
+  "hop": 256,
+  "ids": [
+    "background_2_2493",
+    "background_5_8",
+    "background_2_54",
+    "background_5_461",
+    "background_2_219",
+    "background_5_81",
+    "background_2_1000",
+    "background_2_1001",
+    "background_2_1002",
+    "background_2_1003",
+    "background_2_1004",
+    "background_2_1005"
+  ],
+  "best": {
+    "swap": false,
+    "conj": false,
+    "fftshift": false,
+    "mean_corr": 0.5974470709531866,
+    "mean_box_contrast": 57.663766860961914,
+    "score": 1.1740847395628058
+  },
+  "summary": [
+    {
+      "swap": false,
+      "conj": false,
+      "fftshift": false,
+      "mean_corr": 0.5974470709531866,
+      "mean_box_contrast": 57.663766860961914,
+      "score": 1.1740847395628058
+    },
+    {
+      "swap": true,
+      "conj": true,
+      "fftshift": false,
+      "mean_corr": 0.5974470709531866,
+      "mean_box_contrast": 57.663766860961914,
+      "score": 1.1740847395628058
+    },
+    {
+      "swap": false,
+      "conj": true,
+      "fftshift": true,
+      "mean_corr": 0.07759562640244856,
+      "mean_box_contrast": 4.383972803751628,
+      "score": 0.12143535443996484
+    },
+    {
+      "swap": true,
+      "conj": false,
+      "fftshift": true,
+      "mean_corr": 0.07759562640244856,
+      "mean_box_contrast": 4.383972803751628,
+      "score": 0.12143535443996484
+    },
+    {
+      "swap": false,
+      "conj": true,
+      "fftshift": false,
+      "mean_corr": 0.020069025891801553,
+      "mean_box_contrast": 2.1001675923665366,
+      "score": 0.04107070181546692
+    },
+    {
+      "swap": true,
+      "conj": false,
+      "fftshift": false,
+      "mean_corr": 0.020069025891801553,
+      "mean_box_contrast": 2.1001675923665366,
+      "score": 0.04107070181546692
+    },
+    {
+      "swap": false,
+      "conj": false,
+      "fftshift": true,
+      "mean_corr": -0.025819648285995516,
+      "mean_box_contrast": -6.943311373392741,
+      "score": -0.09525276201992293
+    },
+    {
+      "swap": true,
+      "conj": true,
+      "fftshift": true,
+      "mean_corr": -0.025819648285995516,
+      "mean_box_contrast": -6.943311373392741,
+      "score": -0.09525276201992293
+    }
+  ],
+  "per_id": [
+    {
+      "id": "background_2_2493",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.6653097602350495,
+          "box_contrast": 73.50245666503906
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": -0.09867095789423777,
+          "box_contrast": -13.33929443359375
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": -0.11284812550928085,
+          "box_contrast": -28.43018341064453
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": -0.058425375494911516,
+          "box_contrast": 2.6596221923828125
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": -0.11284812550928085,
+          "box_contrast": -28.43018341064453
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": -0.058425375494911516,
+          "box_contrast": 2.6596221923828125
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.6653097602350495,
+          "box_contrast": 73.50245666503906
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": -0.09867095789423777,
+          "box_contrast": -13.33929443359375
+        }
+      ]
+    },
+    {
+      "id": "background_5_8",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.7146822281973154,
+          "box_contrast": 69.0557861328125
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": -0.174270476372207,
+          "box_contrast": -33.47129440307617
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": -0.0991087083568271,
+          "box_contrast": -1.8432083129882812
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.10488293833010545,
+          "box_contrast": 17.503173828125
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": -0.0991087083568271,
+          "box_contrast": -1.8432083129882812
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.10488293833010545,
+          "box_contrast": 17.503173828125
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.7146822281973154,
+          "box_contrast": 69.0557861328125
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": -0.174270476372207,
+          "box_contrast": -33.47129440307617
+        }
+      ]
+    },
+    {
+      "id": "background_2_54",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.45864406265746527,
+          "box_contrast": 26.70446014404297
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": -0.005731757741167219,
+          "box_contrast": 3.2710647583007812
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.009004246663638431,
+          "box_contrast": 14.154075622558594
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.12276945577353454,
+          "box_contrast": 2.337982177734375
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.009004246663638431,
+          "box_contrast": 14.154075622558594
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.12276945577353454,
+          "box_contrast": 2.337982177734375
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.45864406265746527,
+          "box_contrast": 26.70446014404297
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": -0.005731757741167219,
+          "box_contrast": 3.2710647583007812
+        }
+      ]
+    },
+    {
+      "id": "background_5_461",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.5463527519455463,
+          "box_contrast": 64.61518096923828
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": -0.03281378631895169,
+          "box_contrast": -18.833778381347656
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": -0.010671559104895601,
+          "box_contrast": -10.550926208496094
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.19037365244947577,
+          "box_contrast": 27.532135009765625
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": -0.010671559104895601,
+          "box_contrast": -10.550926208496094
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.19037365244947577,
+          "box_contrast": 27.532135009765625
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.5463527519455463,
+          "box_contrast": 64.61518096923828
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": -0.03281378631895169,
+          "box_contrast": -18.833778381347656
+        }
+      ]
+    },
+    {
+      "id": "background_2_219",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.6458071221674322,
+          "box_contrast": 51.01593017578125
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.0990125337664054,
+          "box_contrast": 26.197784423828125
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.022120017989722622,
+          "box_contrast": 12.817222595214844
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.12453269856701256,
+          "box_contrast": 0.8371658325195312
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.022120017989722622,
+          "box_contrast": 12.817222595214844
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.12453269856701256,
+          "box_contrast": 0.8371658325195312
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.6458071221674322,
+          "box_contrast": 51.01593017578125
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.0990125337664054,
+          "box_contrast": 26.197784423828125
+        }
+      ]
+    },
+    {
+      "id": "background_5_81",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.4940074324262758,
+          "box_contrast": 63.306182861328125
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": -0.01180049262168043,
+          "box_contrast": -13.224716186523438
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.08054696925331019,
+          "box_contrast": 17.099098205566406
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.08474820549543027,
+          "box_contrast": 9.881858825683594
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.08054696925331019,
+          "box_contrast": 17.099098205566406
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.08474820549543027,
+          "box_contrast": 9.881858825683594
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.4940074324262758,
+          "box_contrast": 63.306182861328125
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": -0.01180049262168043,
+          "box_contrast": -13.224716186523438
+        }
+      ]
+    },
+    {
+      "id": "background_2_1000",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.5963267652587445,
+          "box_contrast": 51.550392150878906
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.03226521685358246,
+          "box_contrast": 3.7168426513671875
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.2663793486799566,
+          "box_contrast": 32.340553283691406
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.11144824760816548,
+          "box_contrast": 2.2360610961914062
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.2663793486799566,
+          "box_contrast": 32.340553283691406
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.11144824760816548,
+          "box_contrast": 2.2360610961914062
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.5963267652587445,
+          "box_contrast": 51.550392150878906
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.03226521685358246,
+          "box_contrast": 3.7168426513671875
+        }
+      ]
+    },
+    {
+      "id": "background_2_1001",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.5336178595023227,
+          "box_contrast": 56.793785095214844
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": -0.027973592492604477,
+          "box_contrast": -16.52104949951172
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.09888890228225512,
+          "box_contrast": 15.835601806640625
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.03725241371578221,
+          "box_contrast": -13.252067565917969
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.09888890228225512,
+          "box_contrast": 15.835601806640625
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.03725241371578221,
+          "box_contrast": -13.252067565917969
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.5336178595023227,
+          "box_contrast": 56.793785095214844
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": -0.027973592492604477,
+          "box_contrast": -16.52104949951172
+        }
+      ]
+    },
+    {
+      "id": "background_2_1002",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.5885325677738171,
+          "box_contrast": 41.523345947265625
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.08117407956973291,
+          "box_contrast": 12.471099853515625
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": -0.06620584539400705,
+          "box_contrast": -19.22888946533203
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.029984797479886888,
+          "box_contrast": -17.746688842773438
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": -0.06620584539400705,
+          "box_contrast": -19.22888946533203
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.029984797479886888,
+          "box_contrast": -17.746688842773438
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.5885325677738171,
+          "box_contrast": 41.523345947265625
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.08117407956973291,
+          "box_contrast": 12.471099853515625
+        }
+      ]
+    },
+    {
+      "id": "background_2_1003",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.6074399389668014,
+          "box_contrast": 59.991455078125
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": -0.10616349071888564,
+          "box_contrast": -30.81360626220703
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.1369709467592951,
+          "box_contrast": 7.41937255859375
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.15436952004738255,
+          "box_contrast": 14.031883239746094
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.1369709467592951,
+          "box_contrast": 7.41937255859375
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.15436952004738255,
+          "box_contrast": 14.031883239746094
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.6074399389668014,
+          "box_contrast": 59.991455078125
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": -0.10616349071888564,
+          "box_contrast": -30.81360626220703
+        }
+      ]
+    },
+    {
+      "id": "background_2_1004",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.6784731708800502,
+          "box_contrast": 71.8929443359375
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.03926640077276768,
+          "box_contrast": 7.3025360107421875
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": -0.0021719680097694854,
+          "box_contrast": -5.35968017578125
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": -0.1653743756338075,
+          "box_contrast": -31.656143188476562
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": -0.0021719680097694854,
+          "box_contrast": -5.35968017578125
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": -0.1653743756338075,
+          "box_contrast": -31.656143188476562
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.6784731708800502,
+          "box_contrast": 71.8929443359375
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.03926640077276768,
+          "box_contrast": 7.3025360107421875
+        }
+      ]
+    },
+    {
+      "id": "background_2_1005",
+      "fs": 50000,
+      "n": 250000,
+      "configs": [
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": 0.6401711914274185,
+          "box_contrast": 62.013282775878906
+        },
+        {
+          "swap": false,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": -0.10412945623470041,
+          "box_contrast": -10.075325012207031
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": -0.08207591455177933,
+          "box_contrast": -9.051025390625
+        },
+        {
+          "swap": false,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": 0.19458533849132603,
+          "box_contrast": 38.24269104003906
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": false,
+          "corr_png": -0.08207591455177933,
+          "box_contrast": -9.051025390625
+        },
+        {
+          "swap": true,
+          "conj": false,
+          "fftshift": true,
+          "corr_png": 0.19458533849132603,
+          "box_contrast": 38.24269104003906
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": false,
+          "corr_png": 0.6401711914274185,
+          "box_contrast": 62.013282775878906
+        },
+        {
+          "swap": true,
+          "conj": true,
+          "fftshift": true,
+          "corr_png": -0.10412945623470041,
+          "box_contrast": -10.075325012207031
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+time: 2026-09-02T02:08:29+08:00
+cmd: python scripts/step02_probe_iq.py
+BEST swap=False conj=False fftshift=False mean_corr=0.597 mean_box_contrast=57.66
+
+time: 2026-09-02T02:11:45+08:00
+cmd: python scripts/step02_preview_pem.py
+n=18 class strips written to outputs/step02_preview
+inside-box contrast positive for IF/Coh/Residual
+
+time: 2026-09-02T02:14:14+08:00
+cmd: python scripts/step02_generate_pem.py --limit 5
+dry run 5/5 ok, ~0.3-0.5s/image
+
+time: 2026-09-02T02:14:26+08:00 .. 2026-09-02T02:37:40+08:00
+cmd: python scripts/step02_generate_pem.py --skip-existing
+DONE 4000 phase pngs in data/processed/phase, elapsed 1347.09s, fail 0
+mean_rgb ~ [58.18, 10.80, 58.19]
