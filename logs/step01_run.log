@@ -1,0 +1,17 @@
+time: 2026-09-02T01:59:57+08:00
+python: /home/finnwe/miniconda3/bin/python
+cmd: python scripts/step01_align_boxes.py
+cwd: /home/finnwe/project/paper/MPFADet
+
+total png ids=4000
+overlay n=24 stats n=400
+contrast y_up=21.821 y_down=1.234
+images up better=399/400
+DECISION y_up
+wrote /home/finnwe/project/paper/MPFADet/logs/step01_alignment_report.json
+overlays /home/finnwe/project/paper/MPFADet/outputs/step01_alignment
+
+notes:
+- PNG is full-canvas grayscale spectrogram, no axis/colorbar crop.
+- Frequency axis increases upward (0 Hz at bottom, 50 kHz at top).
+- Time axis left-to-right over 5 seconds (DateTime 0 .. 5e7).
