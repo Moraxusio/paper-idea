@@ -6,8 +6,14 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import sys
 from collections import Counter
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from mpfadet.env import ensure_conda_env
+
+ensure_conda_env()
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont

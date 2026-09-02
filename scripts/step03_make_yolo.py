@@ -6,12 +6,15 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import sys
 from collections import Counter
 from pathlib import Path
 
-import sys
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from mpfadet.env import ensure_conda_env
+
+ensure_conda_env()
+
 from mpfadet.config import RAW_DIR, ROOT
 from mpfadet.geometry import CLASS_TO_ID, box_yolo
 from mpfadet.io_iq import list_sample_ids, parse_dr

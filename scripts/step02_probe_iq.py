@@ -5,14 +5,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from mpfadet.env import ensure_conda_env
+
+ensure_conda_env()
 
 import numpy as np
 from PIL import Image
 
-import sys
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from mpfadet.geometry import PNG_H, PNG_W, box_xyxy
 from mpfadet.io_iq import list_sample_ids, parse_dr, read_iq_wav
 from mpfadet.pem import build_complex, compute_fields, logmag_image

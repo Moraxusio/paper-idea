@@ -127,7 +127,8 @@ class MPFADet(nn.Module):
         self.phase = PhaseNet(3, ch) if dual else None
         self.fuse = nn.ModuleList([OccupancyGatedFusion(c) for c in ch[1:]]) if dual else None
         self.head = DetectHead(ch[1:], nc)
-        self.strides = [8, 16, 32]
+        # stem/s2/s3/s4 are all stride-2: feature map strides are 4, 8, 16
+        self.strides = (4, 8, 16)
 
     def forward(self, mag: torch.Tensor, phase: torch.Tensor | None = None):
         fm = self.mag(mag)

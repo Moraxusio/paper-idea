@@ -5,15 +5,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from mpfadet.env import ensure_conda_env
+
+ensure_conda_env()
 
 import numpy as np
 from PIL import Image
 
-import sys
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from mpfadet.config import (
     FFTSHIFT,
     FLIP_FREQ,

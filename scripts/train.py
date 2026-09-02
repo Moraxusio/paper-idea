@@ -9,12 +9,17 @@ import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from mpfadet.env import ensure_conda_env
+
+ensure_conda_env()
+
 import torch
 from torch.utils.data import DataLoader
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from mpfadet.config import ROOT
 from mpfadet.dataset import MagPhaseDataset, collate
+from mpfadet.eval import decode_batch, map50
 from mpfadet.loss import DetectionLoss
 from mpfadet.model import MPFADet
 
@@ -30,6 +35,7 @@ def main() -> None:
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--dual", action="store_true")
     parser.add_argument("--device", default="cuda")
+    parser.add_argument("--eval-every", type=int, default=1)
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
@@ -46,17 +52,20 @@ def main() -> None:
     model = MPFADet(nc=9, dual=args.dual).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
-    criterion = DetectionLoss(nc=9, imgsz=args.imgsz)
+    criterion = DetectionLoss(nc=9, strides=model.strides, imgsz=args.imgsz)
     n_params = sum(p.numel() for p in model.parameters())
-    print(f"device={device} dual={args.dual} params={n_params/1e6:.2f}M train={len(train_ds)} val={len(val_ds)}")
+    print(
+        f"python={sys.executable} device={device} dual={args.dual} "
+        f"params={n_params/1e6:.2f}M strides={model.strides} train={len(train_ds)} val={len(val_ds)}"
+    )
 
     log_path = args.out / "train.log"
     history = []
-    best = 1e9
+    best = -1.0
     for epoch in range(1, args.epochs + 1):
         model.train()
         t0 = time.time()
-        run = {"box": 0.0, "obj": 0.0, "cls": 0.0, "n": 0}
+        run = {"box": 0.0, "obj": 0.0, "cls": 0.0, "n": 0, "n_pos": 0}
         for mag, phase, targets, _ids in train_loader:
             mag = mag.to(device)
             phase_t = phase.to(device) if phase is not None else None
@@ -69,10 +78,12 @@ def main() -> None:
             run["box"] += parts["box"]
             run["obj"] += parts["obj"]
             run["cls"] += parts["cls"]
+            run["n_pos"] += parts["n_pos"]
             run["n"] += 1
         sched.step()
         model.eval()
         vrun = {"box": 0.0, "obj": 0.0, "cls": 0.0, "n": 0, "loss": 0.0}
+        all_dets, all_tgts = [], []
         with torch.no_grad():
             for mag, phase, targets, _ids in val_loader:
                 mag = mag.to(device)
@@ -84,34 +95,52 @@ def main() -> None:
                 vrun["cls"] += parts["cls"]
                 vrun["loss"] += float(loss.detach())
                 vrun["n"] += 1
+                if epoch % args.eval_every == 0:
+                    dets = decode_batch(preds, model.strides, args.imgsz, conf_th=0.2, iou_th=0.5)
+                    all_dets.extend(dets)
+                    all_tgts.extend(targets)
+        metrics = {"mAP50": None}
+        if all_dets:
+            metrics = map50(all_dets, all_tgts, args.imgsz, nc=9)
         rec = {
             "epoch": epoch,
             "train_box": run["box"] / max(run["n"], 1),
             "train_obj": run["obj"] / max(run["n"], 1),
             "train_cls": run["cls"] / max(run["n"], 1),
+            "train_n_pos": run["n_pos"] / max(run["n"], 1),
             "val_box": vrun["box"] / max(vrun["n"], 1),
             "val_obj": vrun["obj"] / max(vrun["n"], 1),
             "val_cls": vrun["cls"] / max(vrun["n"], 1),
             "val_loss": vrun["loss"] / max(vrun["n"], 1),
+            "mAP50": metrics.get("mAP50"),
             "sec": round(time.time() - t0, 1),
             "lr": sched.get_last_lr()[0],
         }
         history.append(rec)
+        map_s = f" mAP50={rec['mAP50']:.3f}" if rec["mAP50"] is not None else ""
         line = (
-            f"epoch {epoch:03d} train box={rec['train_box']:.3f} obj={rec['train_obj']:.3f} cls={rec['train_cls']:.3f} "
+            f"epoch {epoch:03d} train box={rec['train_box']:.3f} obj={rec['train_obj']:.3f} "
+            f"cls={rec['train_cls']:.3f} npos={rec['train_n_pos']:.1f} "
             f"val box={rec['val_box']:.3f} obj={rec['val_obj']:.3f} cls={rec['val_cls']:.3f} "
-            f"vloss={rec['val_loss']:.3f} {rec['sec']}s"
+            f"vloss={rec['val_loss']:.3f}{map_s} {rec['sec']}s"
         )
         print(line)
         with log_path.open("a") as f:
             f.write(line + "\n")
-        ckpt = {"epoch": epoch, "model": model.state_dict(), "args": vars(args), "rec": rec}
+        ckpt = {
+            "epoch": epoch,
+            "model": model.state_dict(),
+            "args": {k: (str(v) if isinstance(v, Path) else v) for k, v in vars(args).items()},
+            "rec": rec,
+            "strides": list(model.strides),
+        }
         torch.save(ckpt, args.out / "last.pt")
-        if rec["val_loss"] < best:
-            best = rec["val_loss"]
+        score = rec["mAP50"] if rec["mAP50"] is not None else -rec["val_loss"]
+        if score > best:
+            best = score
             torch.save(ckpt, args.out / "best.pt")
     (args.out / "history.json").write_text(json.dumps(history, indent=2))
-    print("best val_loss", best, "wrote", args.out)
+    print("best", best, "wrote", args.out)
 
 
 if __name__ == "__main__":

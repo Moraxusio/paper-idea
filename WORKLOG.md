@@ -145,3 +145,40 @@ Training command (baseline A, mag-only):
 | 3 | 0.648 / 0.011 / 1.798 | 0.688 / 0.011 / 1.958 | 7.973 | 82.5s |
 
 Loss is decreasing. Loop is healthy. Full 30-epoch A / dual F not started yet (~40 min/30 ep on this GPU).
+
+## 2026-09-02 — fix previous-stage bugs, lock conda, continue A
+
+User request: (1) all python via conda env (2) inspect/fix last-stage errors (3) continue.
+
+### Bugs found in Step 4 smoke detector
+1. **Wrong FPN strides.** MagNet is stem/s2/s3/s4 all stride-2 → feature maps are **4/8/16**, but `self.strides` and the loss used **8/16/32**. Grid assignment was off by 2x.
+2. **Every GT assigned to all 3 levels.** Inflated `n_pos` (27 vs 9 boxes) and made box/cls inconsistent across scales.
+3. **Naive BCE on obj.** Positives are ~5 cells vs 128²+64²+32² negatives; obj collapsed (0.101 → 0.011) while cls barely moved.
+4. **Stretch resize 875x656 → 512x512.** Frequency axis compressed; Morse/GMSK heights became ~1–2 px.
+5. **No detection metric.** Only val_loss, cannot tell if boxes are useful.
+6. Scripts used `#!/usr/bin/env python3` and could silently run outside `mpfadet`.
+
+### Fixes
+- `mpfadet.env.ensure_conda_env()` re-execs every script onto `/home/finnwe/miniconda3/envs/mpfadet/bin/python`. Wrapper: `scripts/run_conda.sh`.
+- Strides locked to `(4, 8, 16)`.
+- Size-based FPN assign: min(w,h) <24 → P3, <64 → P4, else P5. `n_pos` now equals number of GT boxes.
+- Obj BCE `pos_weight = clamp(neg/pos, max=50)`. Box loss weight 5.
+- Dataset uses **letterbox** (keep aspect, pad), labels shifted accordingly.
+- Val reports **mAP50** (NMS, VOC-style AP). Decode caps 1000 pre-NMS / 300 post-NMS.
+- Rechecked with conda python: `LETTERBOX_SMOKE_OK`, n_pos=19 for 19 boxes.
+
+### Continue
+30-epoch baseline A (mag-only) with the fixed loss/geometry.
+
+### Baseline A result (14:16:47–~14:51, conda `mpfadet`)
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --epochs 30 --batch 8 --imgsz 512 --out outputs/train_A
+```
+- python confirmed: `/home/finnwe/miniconda3/envs/mpfadet/bin/python`, strides=(4, 8, 16), 2.13M params.
+- npos=40.6 / batch of 8 ≈ 5.1 boxes/image (matches dataset).
+- **best mAP50 = 0.633** (epoch 29). Epoch 30: 0.630 / vloss 3.814.
+- ~68 s/epoch, 30 ep ≈ 34 min. Log: `logs/step04_train_A.log`.
+- Train cls collapsed to 0.001 while val cls ~0.20 — mild overfit on classification; boxes still improving slowly.
+- This is the **magnitude-only anchor** for later mag+PEM comparison.
+
+Next: dual F (`--dual`), same 30 epochs, compare mAP50 vs 0.633 without dropping box quality.
