@@ -174,11 +174,8 @@ class DetectionLoss(torch.nn.Module):
                 pb = torch.cat(pos_pred_boxes, 0)
                 tb = torch.cat(pos_tgt_boxes, 0)
                 bh = (tb[:, 3] - tb[:, 1]).clamp(min=1.0)
-                ph = (pb[:, 3] - pb[:, 1]).clamp(min=1.0)
                 wgt = (8.0 / bh).clamp(0.5, 8.0)
                 loss_box = loss_box + ((wgt * diou_loss(pb, tb)).sum() / wgt.sum())
-                # Frequency-edge: extra L1 on box height (t+b). Isolated loc fix after P2 reject.
-                loss_box = loss_box + 0.5 * ((wgt * (ph - bh).abs()).sum() / wgt.sum())
             if pos_cls_pred:
                 cp = torch.stack(pos_cls_pred, 0)
                 ct = torch.stack(pos_cls_tgt, 0)

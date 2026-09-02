@@ -36,12 +36,13 @@ def shift_yolo(labels: torch.Tensor, pad_x: int, pad_y: int, nw: int, nh: int, s
 
 
 class MagPhaseDataset(Dataset):
-    def __init__(self, root: Path, split: str, imgsz: int = 512, dual: bool = False):
+    def __init__(self, root: Path, split: str, imgsz: int = 512, dual: bool = False, mag_from_phase: bool = False):
         self.root = Path(root)
         self.split = split
         self.imgsz = imgsz
         self.dual = dual
-        mag_dir = self.root / "images" / split
+        self.mag_from_phase = mag_from_phase
+        mag_dir = self.root / ("image" if mag_from_phase else "images") / split
         self.ids = sorted(p.stem for p in mag_dir.glob("*.png"))
         if not self.ids:
             raise FileNotFoundError(f"no images in {mag_dir}")
@@ -51,8 +52,9 @@ class MagPhaseDataset(Dataset):
 
     def __getitem__(self, idx: int):
         sid = self.ids[idx]
+        mag_rel = "image" if self.mag_from_phase else "images"
         mag, scale, pad_x, pad_y, w0, h0 = letterbox_rgb(
-            self.root / "images" / self.split / f"{sid}.png", self.imgsz
+            self.root / mag_rel / self.split / f"{sid}.png", self.imgsz
         )
         nw = max(1, int(round(w0 * scale)))
         nh = max(1, int(round(h0 * scale)))

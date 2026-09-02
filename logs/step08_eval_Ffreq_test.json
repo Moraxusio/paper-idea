@@ -1,0 +1,43 @@
+{
+  "ckpt": "outputs/train_F_freq/best.pt",
+  "split": "test",
+  "dual": true,
+  "p2": false,
+  "epoch": 19,
+  "n_images": 400,
+  "mAP50": 0.75,
+  "mAP75": 0.31,
+  "AP50": {
+    "2FSK": 0.7373,
+    "4FSK": 0.8149,
+    "8-Tone": 0.7245,
+    "16-Tone": 0.8111,
+    "GMSK": 0.6628,
+    "FM": 0.917,
+    "AM-DSB": 0.9191,
+    "Morse": 0.278,
+    "PSK": 0.885
+  },
+  "AP75": {
+    "2FSK": 0.1033,
+    "4FSK": 0.1567,
+    "8-Tone": 0.2112,
+    "16-Tone": 0.3922,
+    "GMSK": 0.0814,
+    "FM": 0.8095,
+    "AM-DSB": 0.5289,
+    "Morse": 0.0413,
+    "PSK": 0.4653
+  },
+  "n_gt": {
+    "2FSK": 235,
+    "4FSK": 247,
+    "8-Tone": 217,
+    "16-Tone": 210,
+    "GMSK": 234,
+    "FM": 205,
+    "AM-DSB": 212,
+    "Morse": 246,
+    "PSK": 200
+  }
+}

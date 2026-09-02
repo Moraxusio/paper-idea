@@ -51,16 +51,23 @@ def main() -> None:
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--dual", action="store_true")
+    parser.add_argument("--pem-only", action="store_true", help="baseline B: MagNet on PEM only (no magnitude PNG)")
     parser.add_argument("--p2", action="store_true", help="add stride-2 P2 head for thin boxes")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--eval-every", type=int, default=1)
     parser.add_argument("--weights", type=Path, default=None)
     args = parser.parse_args()
+    if args.dual and args.pem_only:
+        raise SystemExit("--dual and --pem-only are mutually exclusive (B is single-stream MagNet on PEM)")
     args.out.mkdir(parents=True, exist_ok=True)
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
-    train_ds = MagPhaseDataset(args.data, "train", args.imgsz, dual=args.dual)
-    val_ds = MagPhaseDataset(args.data, "val", args.imgsz, dual=args.dual)
+    train_ds = MagPhaseDataset(
+        args.data, "train", args.imgsz, dual=args.dual, mag_from_phase=args.pem_only
+    )
+    val_ds = MagPhaseDataset(
+        args.data, "val", args.imgsz, dual=args.dual, mag_from_phase=args.pem_only
+    )
     train_loader = DataLoader(
         train_ds, batch_size=args.batch, shuffle=True, num_workers=args.workers, collate_fn=collate
     )
@@ -83,7 +90,7 @@ def main() -> None:
     criterion = DetectionLoss(nc=9, strides=model.strides, imgsz=args.imgsz)
     n_params = sum(p.numel() for p in model.parameters())
     print(
-        f"python={sys.executable} device={device} dual={args.dual} p2={args.p2} "
+        f"python={sys.executable} device={device} dual={args.dual} p2={args.p2} pem_only={args.pem_only} "
         f"params={n_params/1e6:.2f}M strides={model.strides} train={len(train_ds)} val={len(val_ds)}"
     )
 

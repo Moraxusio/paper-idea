@@ -356,3 +356,31 @@ Test: F_hw 0.808 / 0.346 → F_p2 0.719 / 0.316. Reports: `logs/step07_eval_Fp2_
 ### Next isolated loc fix
 Keep F_hw weights and 3-level head. Add **frequency-edge L1** on decoded t+b (height) vs GT height, extra weight on thin boxes. No new FPN level. Still no DGCL.
 
+## 2026-09-03 — F_freq extra height L1 (rejected)
+
+### Setup
+From F_hw best, 20 epochs, extra `0.5 * wgt * |pred_h - gt_h|` on box loss. 3-level dual. conda `mpfadet`.
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --dual --epochs 20 --batch 8 --imgsz 512 --lr 5e-4 --weights outputs/train_F_hw/best.pt --out outputs/train_F_freq
+```
+First attempt aborted empty; rerun 01:50–02:35 completed 20/20. Best epoch **19**. Log: `logs/step08_train_F_freq.log`.
+
+### Val F_hw vs F_freq
+
+| class | F_hw AP50 | F_freq AP50 | Δ |
+|---|---|---|---|
+| 2FSK | 0.713 | 0.697 | -0.016 |
+| 4FSK | 0.781 | 0.751 | -0.030 |
+| GMSK | 0.765 | 0.719 | -0.046 |
+| Morse | 0.590 | **0.230** | **-0.360** |
+| **mAP50** | **0.816** | **0.734** | **-0.082** |
+| **mAP75** | **0.330** | **0.311** | -0.019 |
+
+Test: F_hw 0.808 / 0.346 → F_freq **0.750 / 0.310**. Morse test AP50 0.526 → **0.278**. Reports: `logs/step08_eval_Ffreq_{val,test}.json`.
+
+### Decision
+**Do not ship extra height L1.** Morse collapsed; overall below F_hw. Default loss reverted to height-weighted DIoU only (F_hw). Official SOTA remains **F_hw** (`outputs/train_F_hw/best.pt`).
+
+### Remaining IDEA table (next)
+B PEM-only; C mag+wrapping phase; D mag+P-spectrogram; E concat/ADD vs gated; PEM channel ablation. Loc/DGCL frozen until a loc fix beats F_hw mAP75 without killing Morse.
+
