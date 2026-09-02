@@ -384,3 +384,36 @@ Test: F_hw 0.808 / 0.346 → F_freq **0.750 / 0.310**. Morse test AP50 0.526 →
 ### Remaining IDEA table (next)
 B PEM-only; C mag+wrapping phase; D mag+P-spectrogram; E concat/ADD vs gated; PEM channel ablation. Loc/DGCL frozen until a loc fix beats F_hw mAP75 without killing Morse.
 
+## 2026-09-03 — Baseline B PEM-only MagNet
+
+### Setup
+`--pem-only` (mutex with `--dual`): MagNet on PEM RGB, same 2.13M as A. conda `mpfadet`. First launch used wrong cwd (`/home/finnwe/project/paper/scripts/train.py`); rerun with `workdir=MPFADet`.
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --pem-only --epochs 30 --batch 8 --imgsz 512 --out outputs/train_B
+```
+30/30 epochs, ~96–141 s/epoch. Best epoch **19** by mAP50+mAP75. Log: `logs/step09_train_B.log`.
+
+### Val A vs B vs F_hw
+
+| class | A AP50 | B AP50 | F_hw AP50 |
+|---|---|---|---|
+| 2FSK | 0.456 | 0.671 | 0.713 |
+| 4FSK | 0.516 | 0.785 | 0.781 |
+| 8-Tone | 0.697 | 0.799 | 0.791 |
+| 16-Tone | 0.892 | 0.993 | 0.846 |
+| GMSK | 0.444 | 0.605 | 0.765 |
+| FM | 0.895 | 0.757 | 0.976 |
+| AM-DSB | 0.788 | 0.837 | 0.924 |
+| Morse | 0.108 | 0.550 | 0.590 |
+| PSK | 0.898 | 0.699 | 0.956 |
+| **mAP50** | **0.633** | **0.744** | **0.816** |
+| **mAP75** | **0.188** | **0.262** | **0.330** |
+
+Test B: mAP50 **0.727** / mAP75 **0.249**. Reports: `logs/step09_eval_B_{val,test}.json`.
+
+### Reading
+- PEM-only **beats mag-only** (especially Morse 0.108→0.550, 16-Tone, 8-Tone). IF/Coh events are real, not just extra RGB.
+- Dual F_hw still best: mag PNG is needed for **FM/AM-DSB/GMSK/PSK** and mAP75. Fusion is justified — neither stream is enough.
+- B FM AP50 0.757 < A 0.895: PEM occupancy is weaker than energy spectrogram for wide analog FM.
+- Next: **C** wrapping `angle(STFT)` as fake phase (expect << PEM); **D** P-spectrogram second stream (expect redundant with mag PNG); **E** concat/ADD vs gated.
+
