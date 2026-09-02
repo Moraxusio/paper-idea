@@ -299,3 +299,26 @@ Train F_hw from F_loc best:
 /home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --dual --epochs 20 --batch 8 --imgsz 512 --lr 5e-4 --weights outputs/train_F_loc/best.pt --out outputs/train_F_hw
 ```
 
+Result (19:31:27–20:15, 20/20 epochs, conda `mpfadet`). Best = epoch **17** by mAP50+mAP75. Log: `logs/step06_train_F_hw.log`.
+
+Val F_loc vs F_hw (`best.pt`):
+
+| class | F_loc AP50 | F_hw AP50 | Δ | F_loc AP75 | F_hw AP75 |
+|---|---|---|---|---|---|
+| 2FSK | 0.652 | 0.713 | +0.061 | 0.069 | 0.080 |
+| 4FSK | 0.752 | 0.781 | +0.029 | 0.102 | 0.147 |
+| 8-Tone | 0.789 | 0.791 | +0.003 | 0.315 | 0.298 |
+| 16-Tone | 0.840 | 0.846 | +0.006 | 0.445 | 0.444 |
+| GMSK | 0.679 | 0.765 | +0.086 | 0.107 | 0.116 |
+| FM | 0.944 | 0.976 | +0.032 | 0.785 | 0.807 |
+| AM-DSB | 0.866 | 0.924 | +0.058 | 0.447 | 0.494 |
+| Morse | 0.495 | 0.590 | **+0.095** | 0.035 | 0.072 |
+| PSK | 0.959 | 0.956 | -0.004 | 0.479 | 0.510 |
+| **mAP** | **0.775** | **0.816** | **+0.041** | **0.309** | **0.330** |
+
+Test: F_loc 0.782 / 0.315 → F_hw **0.808 / 0.346**. Reports: `logs/step06_eval_Fhw_{val,test}.json`.
+
+### Reading
+- Height-weighted DIoU helps **Morse/GMSK/AM-DSB AP50** and overall mAP. 16-Tone AP50 did **not** recover to F's 0.964 (still ~0.85).
+- Morse/2FSK/GMSK **AP75 still <0.15**: IoU=0.75 on 1–3 px height is a stride-4 quantization problem. Next isolated fix: **P2 (stride 2)** from existing stem features; load F_hw backbone `strict=False`. Still no DGCL.
+
