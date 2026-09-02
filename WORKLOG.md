@@ -275,3 +275,27 @@ Test: F 0.720 / 0.279 → F_loc **0.782 / 0.315**. Epoch 29 last is slightly wor
 - In-box positives fixed Morse **recall** (AP50). mAP75 on Morse/2FSK/GMSK is still tiny: IoU=0.75 on a 1–3 px height is a frequency-edge problem, not more positives.
 - 16-Tone AP50 dropped (fragmented dets / class-agnostic NMS with denser positives). Next isolated fix: **class-wise NMS** + **height-weighted box loss**. Still no P2/DGCL until those are measured.
 
+## 2026-09-02 — isolated loc follow-ups after F_loc wrap-up
+
+### Class-wise NMS (eval only, no retrain)
+`batched_nms` on F_loc `best.pt` val. Report: `logs/step06_eval_Floc_classnms_val.json`.
+
+| | class-agnostic | class-wise |
+|---|---|---|
+| mAP50 | **0.775** | 0.724 |
+| mAP75 | **0.309** | 0.283 |
+| 16-Tone AP50 | 0.840 | **0.993** |
+| FM AP50 | **0.944** | 0.709 |
+| AM-DSB AP50 | **0.853** | 0.650 |
+| Morse AP50 | 0.495 | 0.494 |
+
+**Do not ship class-wise NMS.** It recovers 16-Tone (wide FM no longer kills overlapping 16-Tone) but leaves extra FPs on FM/AM-DSB. Official F_loc stays class-agnostic. 16-Tone drop vs F is a **training** issue (multi-pos mean DIoU), not eval NMS.
+
+### Height-weighted DIoU (training)
+`wgt = clamp(8/bh, 0.5, 8)` on box loss: Morse ~6×, 16-Tone clamped to 0.5 so large boxes are not drowned. Eval NMS remains class-agnostic.
+
+Train F_hw from F_loc best:
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --dual --epochs 20 --batch 8 --imgsz 512 --lr 5e-4 --weights outputs/train_F_loc/best.pt --out outputs/train_F_hw
+```
+

@@ -164,7 +164,9 @@ class DetectionLoss(torch.nn.Module):
             if pos_pred_boxes:
                 pb = torch.cat(pos_pred_boxes, 0)
                 tb = torch.cat(pos_tgt_boxes, 0)
-                loss_box = loss_box + diou_loss(pb, tb).mean()
+                bh = (tb[:, 3] - tb[:, 1]).clamp(min=1.0)
+                wgt = (8.0 / bh).clamp(0.5, 8.0)
+                loss_box = loss_box + ((wgt * diou_loss(pb, tb)).sum() / wgt.sum())
             if pos_cls_pred:
                 cp = torch.stack(pos_cls_pred, 0)
                 ct = torch.stack(pos_cls_tgt, 0)
