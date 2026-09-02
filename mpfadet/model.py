@@ -56,11 +56,11 @@ class MagNet(nn.Module):
         self.s4 = Stage(ch[2], ch[3], n=2, stride=2, k_time=5, k_freq=3)
 
     def forward(self, x: torch.Tensor) -> list[torch.Tensor]:
-        x = self.stem(x)
-        p3 = self.s2(x)
+        p2 = self.stem(x)
+        p3 = self.s2(p2)
         p4 = self.s3(p3)
         p5 = self.s4(p4)
-        return [p3, p4, p5]
+        return [p2, p3, p4, p5]
 
 
 class PhaseNet(nn.Module):
@@ -72,11 +72,11 @@ class PhaseNet(nn.Module):
         self.s4 = Stage(ch[2], ch[3], n=2, stride=2, k_time=5, k_freq=3)
 
     def forward(self, x: torch.Tensor) -> list[torch.Tensor]:
-        x = self.stem(x)
-        p3 = self.s2(x)
+        p2 = self.stem(x)
+        p3 = self.s2(p2)
         p4 = self.s3(p3)
         p5 = self.s4(p4)
-        return [p3, p4, p5]
+        return [p2, p3, p4, p5]
 
 
 class OccupancyGatedFusion(nn.Module):
@@ -120,22 +120,27 @@ class DetectHead(nn.Module):
 
 
 class MPFADet(nn.Module):
-    def __init__(self, nc: int = 9, dual: bool = True, ch=(32, 64, 128, 256)):
+    def __init__(self, nc: int = 9, dual: bool = True, ch=(32, 64, 128, 256), p2: bool = False):
         super().__init__()
         self.dual = dual
+        self.p2 = p2
         self.mag = MagNet(3, ch)
         self.phase = PhaseNet(3, ch) if dual else None
-        self.fuse = nn.ModuleList([OccupancyGatedFusion(c) for c in ch[1:]]) if dual else None
-        self.head = DetectHead(ch[1:], nc)
-        # stem/s2/s3/s4 are all stride-2: feature map strides are 4, 8, 16
-        self.strides = (4, 8, 16)
+        head_ch = ch if p2 else ch[1:]
+        self.fuse = nn.ModuleList([OccupancyGatedFusion(c) for c in head_ch]) if dual else None
+        self.head = DetectHead(head_ch, nc)
+        # stem is stride 2; s2/s3/s4 add stride 2 each → 2/4/8/16 if p2 else 4/8/16
+        self.strides = (2, 4, 8, 16) if p2 else (4, 8, 16)
+
+    def _levels(self, feats: list[torch.Tensor]) -> list[torch.Tensor]:
+        return feats if self.p2 else feats[1:]
 
     def forward(self, mag: torch.Tensor, phase: torch.Tensor | None = None):
-        fm = self.mag(mag)
+        fm = self._levels(self.mag(mag))
         if self.dual:
             if phase is None:
                 raise ValueError("dual model needs phase input")
-            fp = self.phase(phase)
+            fp = self._levels(self.phase(phase))
             loc, cls = [], []
             gates = []
             for i, fuse in enumerate(self.fuse):

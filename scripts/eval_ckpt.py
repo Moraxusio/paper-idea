@@ -31,8 +31,9 @@ def run(ckpt_path: Path, split: str, imgsz: int, batch: int, conf_th: float) -> 
     if "dual" in args:
         dual = bool(args["dual"])
     strides = tuple(ckpt.get("strides") or (4, 8, 16))
+    p2 = bool(args.get("p2", False)) or len(strides) == 4
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = MPFADet(nc=9, dual=dual)
+    model = MPFADet(nc=9, dual=dual, p2=p2)
     model.load_state_dict(ckpt["model"])
     model.to(device).eval()
     ds = MagPhaseDataset(ROOT / "data/processed", split, imgsz, dual=dual)
@@ -55,6 +56,7 @@ def run(ckpt_path: Path, split: str, imgsz: int, batch: int, conf_th: float) -> 
         "ckpt": str(ckpt_path),
         "split": split,
         "dual": dual,
+        "p2": p2,
         "epoch": ckpt.get("epoch"),
         "n_images": len(ds),
         "mAP50": round(m50["mAP50"], 4),

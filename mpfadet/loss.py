@@ -44,9 +44,18 @@ def diou_loss(pred: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     return 1.0 - (iou - rho2 / c2)
 
 
-def assign_level(min_side: torch.Tensor) -> torch.Tensor:
-    """Map min(box_w, box_h) in pixels to FPN index 0/1/2 for strides 4/8/16."""
+def assign_level(min_side: torch.Tensor, n_lvl: int = 3) -> torch.Tensor:
+    """Map min(box_w, box_h) in pixels to FPN index.
+
+    3 levels (4/8/16): <24 → P3, <64 → P4, else P5.
+    4 levels (2/4/8/16): <4 → P2, <24 → P3, <64 → P4, else P5.
+    """
     lvl = torch.zeros_like(min_side, dtype=torch.long)
+    if n_lvl == 4:
+        lvl = torch.where(min_side >= 4.0, torch.ones_like(lvl), lvl)
+        lvl = torch.where(min_side >= 24.0, torch.full_like(lvl, 2), lvl)
+        lvl = torch.where(min_side >= 64.0, torch.full_like(lvl, 3), lvl)
+        return lvl
     lvl = torch.where(min_side >= 24.0, torch.ones_like(lvl), lvl)
     lvl = torch.where(min_side >= 64.0, torch.full_like(lvl, 2), lvl)
     return lvl
@@ -97,7 +106,7 @@ class DetectionLoss(torch.nn.Module):
                 cy = tgt[:, 2] * self.imgsz
                 bw = (tgt[:, 3] * self.imgsz).clamp(min=1.0)
                 bh = (tgt[:, 4] * self.imgsz).clamp(min=1.0)
-                lvl = assign_level(torch.minimum(bw, bh))
+                lvl = assign_level(torch.minimum(bw, bh), n_lvl=n_lvl)
                 x1 = cx - bw / 2
                 y1 = cy - bh / 2
                 x2 = cx + bw / 2
@@ -165,8 +174,11 @@ class DetectionLoss(torch.nn.Module):
                 pb = torch.cat(pos_pred_boxes, 0)
                 tb = torch.cat(pos_tgt_boxes, 0)
                 bh = (tb[:, 3] - tb[:, 1]).clamp(min=1.0)
+                ph = (pb[:, 3] - pb[:, 1]).clamp(min=1.0)
                 wgt = (8.0 / bh).clamp(0.5, 8.0)
                 loss_box = loss_box + ((wgt * diou_loss(pb, tb)).sum() / wgt.sum())
+                # Frequency-edge: extra L1 on box height (t+b). Isolated loc fix after P2 reject.
+                loss_box = loss_box + 0.5 * ((wgt * (ph - bh).abs()).sum() / wgt.sum())
             if pos_cls_pred:
                 cp = torch.stack(pos_cls_pred, 0)
                 ct = torch.stack(pos_cls_tgt, 0)

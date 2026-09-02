@@ -24,6 +24,23 @@ from mpfadet.loss import DetectionLoss
 from mpfadet.model import MPFADet
 
 
+def shift_head_for_p2(state: dict) -> dict:
+    """Map 3-level fuse/head indices 0,1,2 onto 1,2,3 so P2 slot 0 stays random."""
+    out = {}
+    prefixes = ("fuse.", "head.loc.", "head.cls.")
+    for k, v in state.items():
+        nk = k
+        for prefix in prefixes:
+            if k.startswith(prefix):
+                rest = k[len(prefix) :]
+                idx, dot, tail = rest.partition(".")
+                if idx.isdigit() and dot:
+                    nk = f"{prefix}{int(idx) + 1}.{tail}"
+                break
+        out[nk] = v
+    return out
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", type=Path, default=ROOT / "data/processed")
@@ -34,6 +51,7 @@ def main() -> None:
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--dual", action="store_true")
+    parser.add_argument("--p2", action="store_true", help="add stride-2 P2 head for thin boxes")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--eval-every", type=int, default=1)
     parser.add_argument("--weights", type=Path, default=None)
@@ -50,17 +68,22 @@ def main() -> None:
         val_ds, batch_size=args.batch, shuffle=False, num_workers=args.workers, collate_fn=collate
     )
 
-    model = MPFADet(nc=9, dual=args.dual).to(device)
+    model = MPFADet(nc=9, dual=args.dual, p2=args.p2).to(device)
     if args.weights is not None:
         ckpt0 = torch.load(args.weights, map_location=device, weights_only=False)
-        missing, unexpected = model.load_state_dict(ckpt0["model"], strict=False)
+        sd = ckpt0["model"]
+        src_strides = list(ckpt0.get("strides") or [])
+        if args.p2 and len(src_strides) == 3:
+            sd = shift_head_for_p2(sd)
+            print("remapped 3-level fuse/head -> P3/P4/P5 slots")
+        missing, unexpected = model.load_state_dict(sd, strict=False)
         print(f"loaded {args.weights} missing={len(missing)} unexpected={len(unexpected)}")
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
     criterion = DetectionLoss(nc=9, strides=model.strides, imgsz=args.imgsz)
     n_params = sum(p.numel() for p in model.parameters())
     print(
-        f"python={sys.executable} device={device} dual={args.dual} "
+        f"python={sys.executable} device={device} dual={args.dual} p2={args.p2} "
         f"params={n_params/1e6:.2f}M strides={model.strides} train={len(train_ds)} val={len(val_ds)}"
     )
 

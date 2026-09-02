@@ -322,3 +322,37 @@ Test: F_loc 0.782 / 0.315 → F_hw **0.808 / 0.346**. Reports: `logs/step06_eval
 - Height-weighted DIoU helps **Morse/GMSK/AM-DSB AP50** and overall mAP. 16-Tone AP50 did **not** recover to F's 0.964 (still ~0.85).
 - Morse/2FSK/GMSK **AP75 still <0.15**: IoU=0.75 on 1–3 px height is a stride-4 quantization problem. Next isolated fix: **P2 (stride 2)** from existing stem features; load F_hw backbone `strict=False`. Still no DGCL.
 
+## 2026-09-02 — P2 stride-2 head (rejected)
+
+### Setup
+`--p2` uses MagNet/PhaseNet stem as P2 (stride 2). 3-level F_hw fuse/head remapped 0,1,2 → 1,2,3; P2 slots random. Assign: min_side <4 → P2.
+
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --dual --p2 --epochs 20 --batch 8 --imgsz 512 --lr 5e-4 --weights outputs/train_F_hw/best.pt --out outputs/train_F_p2
+```
+
+Smoke: missing=20 (P2 fuse/head), unexpected=0, preds 256/128/64/32, n_pos 2705. 20/20 epochs. Best epoch 12. Log: `logs/step07_train_F_p2.log`.
+
+### Val F_hw vs F_p2
+
+| class | F_hw AP50 | F_p2 AP50 | Δ | F_hw AP75 | F_p2 AP75 |
+|---|---|---|---|---|---|
+| 2FSK | 0.713 | 0.342 | **-0.371** | 0.080 | 0.037 |
+| 4FSK | 0.781 | 0.766 | -0.015 | 0.147 | 0.159 |
+| 8-Tone | 0.791 | 0.802 | +0.011 | 0.298 | 0.370 |
+| 16-Tone | 0.846 | 0.819 | -0.027 | 0.444 | 0.416 |
+| GMSK | 0.765 | 0.630 | -0.135 | 0.116 | 0.135 |
+| FM | 0.976 | 0.926 | -0.050 | 0.807 | 0.769 |
+| AM-DSB | 0.924 | 0.884 | -0.040 | 0.494 | 0.470 |
+| Morse | 0.590 | 0.302 | **-0.288** | 0.072 | 0.036 |
+| PSK | 0.956 | 0.937 | -0.019 | 0.510 | 0.484 |
+| **mAP** | **0.816** | **0.712** | **-0.104** | **0.330** | **0.320** |
+
+Test: F_hw 0.808 / 0.346 → F_p2 0.719 / 0.316. Reports: `logs/step07_eval_Fp2_{val,test}.json`.
+
+### Decision
+**Do not ship `--p2` as default.** Official model stays **3-level F_hw**. Morse/2FSK were moved to randomly initialized stride-2 heads and got worse, not better. mAP75 did not improve. `--p2` remains optional for later experiments.
+
+### Next isolated loc fix
+Keep F_hw weights and 3-level head. Add **frequency-edge L1** on decoded t+b (height) vs GT height, extra weight on thin boxes. No new FPN level. Still no DGCL.
+
