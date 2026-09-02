@@ -182,3 +182,50 @@ User request: (1) all python via conda env (2) inspect/fix last-stage errors (3)
 - This is the **magnitude-only anchor** for later mag+PEM comparison.
 
 Next: dual F (`--dual`), same 30 epochs, compare mAP50 vs 0.633 without dropping box quality.
+
+## 2026-09-02 — dual F (mag+PEM occupancy-gated fusion)
+
+### Smoke (14:53:05)
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python  # MagPhaseDataset dual=True + MPFADet dual=True
+```
+- mag/phase both `[2,3,512,512]`, dual params **2.877 M**, gates at P3/P4/P5.
+- n_pos=9 for 9 boxes. **DUAL_SMOKE_OK**.
+
+### 30-epoch train F (14:53:30–~15:44, conda `mpfadet`)
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --dual --epochs 30 --batch 8 --imgsz 512 --out outputs/train_F
+```
+- python confirmed, dual=True, strides=(4, 8, 16), ~100 s/epoch ≈ 50 min.
+- **best mAP50 = 0.713** (epoch 24). Epoch 30: 0.707 / vloss 3.293.
+- vs A: **+0.080 mAP50** (0.633 → 0.713), val box 0.209 → 0.190, val cls 0.200 → 0.125.
+- Box quality did not drop; classification val cls is clearly better than A.
+- Train cls still →0 (overfit on class logits); fusion still helps val mAP.
+- Log: `logs/step04_train_F.log`.
+
+### Per-class eval (conda `mpfadet`, `scripts/eval_ckpt.py`, best.pt)
+
+Val (400 images):
+
+| class | A AP50 | F AP50 | Δ | A AP75 | F AP75 |
+|---|---|---|---|---|---|
+| 2FSK | 0.456 | 0.534 | +0.078 | 0.022 | 0.075 |
+| 4FSK | 0.516 | 0.659 | +0.143 | 0.024 | 0.090 |
+| 8-Tone | 0.697 | 0.706 | +0.009 | 0.235 | 0.275 |
+| 16-Tone | 0.892 | 0.964 | +0.072 | 0.293 | 0.415 |
+| GMSK | 0.444 | 0.599 | +0.155 | 0.024 | 0.076 |
+| FM | 0.895 | 0.944 | +0.049 | 0.543 | 0.643 |
+| AM-DSB | 0.788 | 0.853 | +0.065 | 0.220 | 0.298 |
+| Morse | 0.108 | 0.253 | +0.145 | 0.001 | 0.010 |
+| PSK | 0.898 | 0.903 | +0.005 | 0.334 | 0.456 |
+| **mAP** | **0.633** | **0.713** | **+0.080** | **0.188** | **0.260** |
+
+Test (400 images): A mAP50=0.646 / mAP75=0.205; F mAP50=0.720 / mAP75=0.279. Same pattern: GMSK/4FSK/Morse gain most; PSK already high from mag.
+
+Reports: `logs/step04_eval_{A,F}_{val,test}.json`.
+
+### Reading
+- PEM fusion helps **FSK stairs / GMSK / Morse on-off**, which is the intended role of IF+Coh.
+- PSK AP50 was already ~0.90 on mag-only; Residual channel is not the main val gain at IoU=0.5.
+- **mAP75 is the next bottleneck** (thin Morse/GMSK/FSK boxes). Do not add DGCL until a localization-focused fix is isolated (center-sampling for 1-px-tall boxes, extra P2, or coarse+fine offsets).
+
