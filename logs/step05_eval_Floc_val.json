@@ -1,0 +1,42 @@
+{
+  "ckpt": "/home/finnwe/project/paper/MPFADet/outputs/train_F_loc/best.pt",
+  "split": "val",
+  "dual": true,
+  "epoch": 21,
+  "n_images": 400,
+  "mAP50": 0.7751,
+  "mAP75": 0.3093,
+  "AP50": {
+    "2FSK": 0.6523,
+    "4FSK": 0.7524,
+    "8-Tone": 0.7885,
+    "16-Tone": 0.84,
+    "GMSK": 0.6788,
+    "FM": 0.9436,
+    "AM-DSB": 0.8661,
+    "Morse": 0.4949,
+    "PSK": 0.9594
+  },
+  "AP75": {
+    "2FSK": 0.069,
+    "4FSK": 0.1022,
+    "8-Tone": 0.3148,
+    "16-Tone": 0.4449,
+    "GMSK": 0.1068,
+    "FM": 0.7853,
+    "AM-DSB": 0.4465,
+    "Morse": 0.0349,
+    "PSK": 0.479
+  },
+  "n_gt": {
+    "2FSK": 242,
+    "4FSK": 232,
+    "8-Tone": 209,
+    "16-Tone": 212,
+    "GMSK": 246,
+    "FM": 196,
+    "AM-DSB": 218,
+    "Morse": 246,
+    "PSK": 208
+  }
+}

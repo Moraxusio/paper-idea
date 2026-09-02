@@ -229,3 +229,49 @@ Reports: `logs/step04_eval_{A,F}_{val,test}.json`.
 - PSK AP50 was already ~0.90 on mag-only; Residual channel is not the main val gain at IoU=0.5.
 - **mAP75 is the next bottleneck** (thin Morse/GMSK/FSK boxes). Do not add DGCL until a localization-focused fix is isolated (center-sampling for 1-px-tall boxes, extra P2, or coarse+fine offsets).
 
+## 2026-09-02 — F_loc: in-box multi-positive + DIoU (wrap-up)
+
+User request: wrap previous work, then continue the plan.
+
+### Diagnosis (letterbox 512, first 400 train images)
+- Morse height ~1.31 px, 2FSK ~3.1 px, 4FSK ~6.9 px, GMSK p10~1.9.
+- At assigned P3 (stride 4), **236/1097 boxes had no cell center inside the GT** (21%). P4/P5 were fine.
+- Center-only assignment therefore starved Morse/2FSK of loc/obj supervision.
+
+### Fix (weights-compatible, no architecture change)
+- Expand tiny w/h to at least one stride so a cell center can land in-box; fallback to nearest center if still empty.
+- Multi-positive along the time axis for box/obj; **cls still only at GT center** (avoid Morse stripes flooding CE).
+- GIoU → DIoU (center-distance term for 1-px-tall boxes).
+- Train logs mAP75; `--weights` loads F for finetune. Best checkpoint by mAP50+mAP75.
+
+### Train (18:08:33–19:06, conda `mpfadet`, timeout after epoch 29)
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --dual --epochs 30 --batch 8 --imgsz 512 --lr 5e-4 --weights outputs/train_F/best.pt --out outputs/train_F_loc
+```
+- loaded F best, missing=0. npos ~8489.8 / batch (≈1060/image vs ~5 before).
+- No epoch 30 / `history.json` (tool timeout). `best.pt` = epoch **21**, `last.pt` = epoch 29.
+- Log: `logs/step05_train_F_loc.log`.
+
+### Eval vs F (conda, `scripts/eval_ckpt.py`)
+
+Val:
+
+| class | F AP50 | F_loc AP50 | Δ | F AP75 | F_loc AP75 |
+|---|---|---|---|---|---|
+| 2FSK | 0.534 | 0.652 | +0.118 | 0.075 | 0.069 |
+| 4FSK | 0.659 | 0.752 | +0.094 | 0.090 | 0.102 |
+| 8-Tone | 0.706 | 0.789 | +0.082 | 0.275 | 0.315 |
+| 16-Tone | 0.964 | 0.840 | **-0.124** | 0.415 | 0.445 |
+| GMSK | 0.599 | 0.679 | +0.080 | 0.076 | 0.107 |
+| FM | 0.944 | 0.944 | 0.000 | 0.643 | 0.785 |
+| AM-DSB | 0.853 | 0.866 | +0.013 | 0.298 | 0.447 |
+| Morse | 0.253 | 0.495 | **+0.242** | 0.010 | 0.035 |
+| PSK | 0.903 | 0.959 | +0.057 | 0.456 | 0.479 |
+| **mAP** | **0.713** | **0.775** | **+0.062** | **0.260** | **0.309** |
+
+Test: F 0.720 / 0.279 → F_loc **0.782 / 0.315**. Epoch 29 last is slightly worse than epoch 21 best (val 0.771 / 0.302).
+
+### Reading
+- In-box positives fixed Morse **recall** (AP50). mAP75 on Morse/2FSK/GMSK is still tiny: IoU=0.75 on a 1–3 px height is a frequency-edge problem, not more positives.
+- 16-Tone AP50 dropped (fragmented dets / class-agnostic NMS with denser positives). Next isolated fix: **class-wise NMS** + **height-weighted box loss**. Still no P2/DGCL until those are measured.
+

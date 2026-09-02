@@ -36,6 +36,7 @@ def main() -> None:
     parser.add_argument("--dual", action="store_true")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--eval-every", type=int, default=1)
+    parser.add_argument("--weights", type=Path, default=None)
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
@@ -50,6 +51,10 @@ def main() -> None:
     )
 
     model = MPFADet(nc=9, dual=args.dual).to(device)
+    if args.weights is not None:
+        ckpt0 = torch.load(args.weights, map_location=device, weights_only=False)
+        missing, unexpected = model.load_state_dict(ckpt0["model"], strict=False)
+        print(f"loaded {args.weights} missing={len(missing)} unexpected={len(unexpected)}")
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
     criterion = DetectionLoss(nc=9, strides=model.strides, imgsz=args.imgsz)
@@ -99,9 +104,11 @@ def main() -> None:
                     dets = decode_batch(preds, model.strides, args.imgsz, conf_th=0.2, iou_th=0.5)
                     all_dets.extend(dets)
                     all_tgts.extend(targets)
-        metrics = {"mAP50": None}
+        metrics = {"mAP50": None, "mAP75": None}
         if all_dets:
-            metrics = map50(all_dets, all_tgts, args.imgsz, nc=9)
+            metrics = map50(all_dets, all_tgts, args.imgsz, nc=9, iou_th=0.5)
+            m75 = map50(all_dets, all_tgts, args.imgsz, nc=9, iou_th=0.75)
+            metrics["mAP75"] = m75["mAP50"]
         rec = {
             "epoch": epoch,
             "train_box": run["box"] / max(run["n"], 1),
@@ -113,11 +120,14 @@ def main() -> None:
             "val_cls": vrun["cls"] / max(vrun["n"], 1),
             "val_loss": vrun["loss"] / max(vrun["n"], 1),
             "mAP50": metrics.get("mAP50"),
+            "mAP75": metrics.get("mAP75"),
             "sec": round(time.time() - t0, 1),
             "lr": sched.get_last_lr()[0],
         }
         history.append(rec)
-        map_s = f" mAP50={rec['mAP50']:.3f}" if rec["mAP50"] is not None else ""
+        map_s = ""
+        if rec["mAP50"] is not None:
+            map_s = f" mAP50={rec['mAP50']:.3f} mAP75={rec['mAP75']:.3f}"
         line = (
             f"epoch {epoch:03d} train box={rec['train_box']:.3f} obj={rec['train_obj']:.3f} "
             f"cls={rec['train_cls']:.3f} npos={rec['train_n_pos']:.1f} "
@@ -135,7 +145,11 @@ def main() -> None:
             "strides": list(model.strides),
         }
         torch.save(ckpt, args.out / "last.pt")
-        score = rec["mAP50"] if rec["mAP50"] is not None else -rec["val_loss"]
+        score = 0.0
+        if rec["mAP50"] is not None:
+            score = rec["mAP50"] + (rec["mAP75"] or 0.0)
+        else:
+            score = -rec["val_loss"]
         if score > best:
             best = score
             torch.save(ckpt, args.out / "best.pt")
