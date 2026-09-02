@@ -417,3 +417,45 @@ Test B: mAP50 **0.727** / mAP75 **0.249**. Reports: `logs/step09_eval_B_{val,tes
 - B FM AP50 0.757 < A 0.895: PEM occupancy is weaker than energy spectrogram for wide analog FM.
 - Next: **C** wrapping `angle(STFT)` as fake phase (expect << PEM); **D** P-spectrogram second stream (expect redundant with mag PNG); **E** concat/ADD vs gated.
 
+## 2026-09-03 — Baseline C mag + wrapping `angle(STFT)`
+
+### Data
+`--mode wrap` writes energy-gated wrapping phase as 3ch grayscale (R=G=B). Resume after skip-existing crash fix:
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/step02_generate_pem.py --mode wrap --out-dir data/processed/wrap --report logs/step10_generate_wrap_report.json --skip-existing
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/step10_link_wrap.py
+```
+- 4000 wrap PNGs, 0 fail. n_ok=3642 n_skip=358. mean RGB ≈ (58.20, 58.20, 58.20).
+- Linked train/val/test 3200/400/400, missing 0. Do **not** rerun `step03_make_yolo.py`.
+- `--phase-subdir wrap` on `--dual`. Same loc recipe as current default (in-box multi-pos + height-weighted DIoU), **from scratch** 30 epochs — not F→F_loc→F_hw sequential.
+
+### Train (04:21–05:27, conda `mpfadet`)
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --dual --phase-subdir wrap --epochs 30 --batch 8 --imgsz 512 --out outputs/train_C
+```
+Best epoch **28** by mAP50+mAP75. Log: `logs/step10_train_C.log`.
+
+### Val F_hw (PEM sequential) vs C (wrap from scratch)
+
+| class | F_hw AP50 | C AP50 | Δ | F_hw AP75 | C AP75 |
+|---|---|---|---|---|---|
+| 2FSK | 0.713 | 0.719 | +0.006 | 0.080 | 0.079 |
+| 4FSK | 0.781 | 0.749 | -0.032 | 0.147 | 0.146 |
+| 8-Tone | 0.791 | 0.907 | +0.116 | 0.298 | 0.361 |
+| 16-Tone | 0.846 | 0.994 | +0.148 | 0.444 | 0.666 |
+| GMSK | 0.765 | 0.702 | -0.063 | 0.116 | 0.101 |
+| FM | 0.976 | 0.921 | -0.055 | 0.807 | 0.762 |
+| AM-DSB | 0.924 | 0.900 | -0.024 | 0.494 | 0.498 |
+| Morse | 0.590 | 0.593 | +0.003 | 0.072 | 0.051 |
+| PSK | 0.956 | 0.983 | +0.027 | 0.510 | 0.553 |
+| **mAP** | **0.816** | **0.830** | +0.014 | **0.330** | **0.357** |
+
+Test: F_hw 0.808 / 0.346 → C **0.831 / 0.354**. Reports: `logs/step10_eval_C_{val,test}.json`.
+
+### Reading
+- Wrapping is **not** a collapsed second stream: gated wrap occupancy still trains. Overall mAP is slightly above F_hw.
+- Class pattern matches the PEM story, not a wrap win: **GMSK/FM/4FSK** (IF/Coh) drop vs F_hw; Morse AP50 ties, Morse AP75 worse.
+- C's mAP edge is mostly **16-Tone/8-Tone** (0.846→0.994 / 0.791→0.907). F_hw sequential finetune had already hurt 16-Tone vs first F (0.964). Training recipe (from-scratch loc extras) is confounded with the phase map.
+- **Do not ship wrap as official.** Official stays **F_hw** (`outputs/train_F_hw/best.pt`, PEM). C is the wrapping baseline, not a replacement.
+- Fair PEM control still missing: from-scratch `--dual` 30 ep with the same loc recipe (`outputs/train_F_scratch`). Then D (P-spectrogram) and E (concat/ADD vs gated).
+

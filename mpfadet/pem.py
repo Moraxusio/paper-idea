@@ -86,6 +86,29 @@ def fields_to_pem(
     return (pem * 255.0 + 0.5).astype(np.uint8)
 
 
+def fields_to_wrap(
+    fields: dict,
+    out_h: int = PNG_H,
+    out_w: int = PNG_W,
+    flip_freq: bool = True,
+    gate_alpha: float = 6.0,
+    gate_percentile: float = 55.0,
+) -> np.ndarray:
+    """IDEA C: wrapping STFT phase as a 3-channel grayscale image (known-weak baseline)."""
+    logmag = fields["logmag"]
+    phi = np.angle(fields["X"]).astype(np.float32)
+    wrap = (phi / np.pi + 1.0) * 0.5
+    if flip_freq:
+        logmag = logmag[::-1]
+        wrap = wrap[::-1]
+    tau = np.percentile(logmag, gate_percentile)
+    gate = sigmoid(gate_alpha * (logmag - tau)).astype(np.float32)
+    img = np.clip(wrap * gate, 0.0, 1.0)
+    img = np.stack([img, img, img], axis=-1)
+    img = resize_tf(img, out_h, out_w)
+    return (img * 255.0 + 0.5).astype(np.uint8)
+
+
 def logmag_image(logmag: np.ndarray, out_h: int, out_w: int, flip_freq: bool = True) -> np.ndarray:
     x = logmag[::-1] if flip_freq else logmag
     x = resize_tf(x, out_h, out_w)

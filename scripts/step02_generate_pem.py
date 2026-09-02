@@ -31,30 +31,40 @@ from mpfadet.config import (
 )
 from mpfadet.geometry import PNG_H, PNG_W
 from mpfadet.io_iq import list_sample_ids, read_iq_wav
-from mpfadet.pem import build_complex, compute_fields, fields_to_pem
+from mpfadet.pem import build_complex, compute_fields, fields_to_pem, fields_to_wrap
 
 
-def generate_one(raw_dir: Path, sid: str, out_path: Path) -> dict:
+def generate_one(raw_dir: Path, sid: str, out_path: Path, mode: str = "pem") -> dict:
     t0 = time.time()
     iq, fs = read_iq_wav(raw_dir / f"{sid}.wav")
     x = build_complex(iq, IQ_SWAP, IQ_CONJ)
     fields = compute_fields(x, N_FFT, HOP, float(fs), FFTSHIFT)
-    pem = fields_to_pem(
-        fields,
-        PNG_H,
-        PNG_W,
-        flip_freq=FLIP_FREQ,
-        gate_alpha=GATE_ALPHA,
-        gate_percentile=GATE_PERCENTILE,
-        hop=HOP,
-        n_fft=N_FFT,
-    )
+    if mode == "wrap":
+        img = fields_to_wrap(
+            fields,
+            PNG_H,
+            PNG_W,
+            flip_freq=FLIP_FREQ,
+            gate_alpha=GATE_ALPHA,
+            gate_percentile=GATE_PERCENTILE,
+        )
+    else:
+        img = fields_to_pem(
+            fields,
+            PNG_H,
+            PNG_W,
+            flip_freq=FLIP_FREQ,
+            gate_alpha=GATE_ALPHA,
+            gate_percentile=GATE_PERCENTILE,
+            hop=HOP,
+            n_fft=N_FFT,
+        )
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    Image.fromarray(pem).save(out_path)
+    Image.fromarray(img).save(out_path)
     return {
         "id": sid,
-        "shape": list(pem.shape),
-        "mean": [float(pem[:, :, i].mean()) for i in range(3)],
+        "shape": list(img.shape),
+        "mean": [float(img[:, :, i].mean()) for i in range(3)],
         "sec": round(time.time() - t0, 4),
     }
 
@@ -66,7 +76,12 @@ def main() -> None:
     parser.add_argument("--report", type=Path, default=ROOT / "logs/step02_generate_report.json")
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--skip-existing", action="store_true")
+    parser.add_argument("--mode", choices=("pem", "wrap"), default="pem")
     args = parser.parse_args()
+    if args.mode == "wrap" and args.out_dir == ROOT / "data/processed/phase":
+        args.out_dir = ROOT / "data/processed/wrap"
+        if args.report == ROOT / "logs/step02_generate_report.json":
+            args.report = ROOT / "logs/step10_generate_wrap_report.json"
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
     ids = list_sample_ids(args.raw_dir)
@@ -75,12 +90,18 @@ def main() -> None:
     t_all = time.time()
     rows = []
     failed = []
+    rec = None
+    n_skip = 0
     for i, sid in enumerate(ids, 1):
         out_path = args.out_dir / f"{sid}.png"
         if args.skip_existing and out_path.exists():
+            n_skip += 1
+            if i % 200 == 0 or i == len(ids):
+                elapsed = time.time() - t_all
+                print(f"[{i}/{len(ids)}] skip existing {sid} done={len(rows)} skip={n_skip}")
             continue
         try:
-            rec = generate_one(args.raw_dir, sid, out_path)
+            rec = generate_one(args.raw_dir, sid, out_path, mode=args.mode)
             rows.append(rec)
         except Exception as e:
             failed.append({"id": sid, "error": str(e)})
@@ -88,13 +109,18 @@ def main() -> None:
             continue
         if i % 50 == 0 or i == 1 or i == len(ids):
             elapsed = time.time() - t_all
-            rate = i / max(elapsed, 1e-6)
-            eta = (len(ids) - i) / max(rate, 1e-6)
-            print(f"[{i}/{len(ids)}] {sid} {rec['sec']:.3f}s mean={rec['mean']} eta={eta/60:.1f}min")
+            done = n_skip + len(rows)
+            rate = done / max(elapsed, 1e-6)
+            eta = (len(ids) - done) / max(rate, 1e-6)
+            print(
+                f"[{i}/{len(ids)}] {sid} {rec['sec']:.3f}s mean={rec['mean']} "
+                f"eta={eta/60:.1f}min skip={n_skip}"
+            )
 
     report = {
         "n_ids": len(ids),
         "n_ok": len(rows),
+        "n_skip": n_skip,
         "n_fail": len(failed),
         "failed": failed,
         "elapsed_sec": round(time.time() - t_all, 2),
@@ -106,6 +132,7 @@ def main() -> None:
             "conj": IQ_CONJ,
             "fftshift": FFTSHIFT,
             "flip_freq": FLIP_FREQ,
+            "mode": args.mode,
         },
         "mean_rgb": (
             np.mean([r["mean"] for r in rows], axis=0).tolist() if rows else None

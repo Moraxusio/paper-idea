@@ -52,6 +52,11 @@ def main() -> None:
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--dual", action="store_true")
     parser.add_argument("--pem-only", action="store_true", help="baseline B: MagNet on PEM only (no magnitude PNG)")
+    parser.add_argument(
+        "--phase-subdir",
+        default="image",
+        help="dual second-stream folder under data/processed (image=PEM, wrap=wrapping phase)",
+    )
     parser.add_argument("--p2", action="store_true", help="add stride-2 P2 head for thin boxes")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--eval-every", type=int, default=1)
@@ -63,10 +68,20 @@ def main() -> None:
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     train_ds = MagPhaseDataset(
-        args.data, "train", args.imgsz, dual=args.dual, mag_from_phase=args.pem_only
+        args.data,
+        "train",
+        args.imgsz,
+        dual=args.dual,
+        mag_from_phase=args.pem_only,
+        phase_subdir=args.phase_subdir,
     )
     val_ds = MagPhaseDataset(
-        args.data, "val", args.imgsz, dual=args.dual, mag_from_phase=args.pem_only
+        args.data,
+        "val",
+        args.imgsz,
+        dual=args.dual,
+        mag_from_phase=args.pem_only,
+        phase_subdir=args.phase_subdir,
     )
     train_loader = DataLoader(
         train_ds, batch_size=args.batch, shuffle=True, num_workers=args.workers, collate_fn=collate
