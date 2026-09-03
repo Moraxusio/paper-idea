@@ -1,0 +1,15 @@
+python=/home/finnwe/miniconda3/envs/mpfadet/bin/python device=cuda dual=True p2=False pem_only=False fusion=gated phase_subdir=image params=2.88M strides=(4, 8, 16) train=3200 val=400
+epoch 001 train box=0.613 obj=0.428 cls=0.343 npos=8489.8 val box=0.471 obj=0.350 cls=0.202 vloss=8.725 mAP50=0.436 mAP75=0.031 252.9s
+epoch 002 train box=0.395 obj=0.268 cls=0.113 npos=8489.8 val box=0.373 obj=0.267 cls=0.128 vloss=6.778 mAP50=0.619 mAP75=0.140 197.0s
+epoch 003 train box=0.350 obj=0.226 cls=0.077 npos=8489.8 val box=0.347 obj=0.246 cls=0.112 vloss=6.282 mAP50=0.660 mAP75=0.202 186.9s
+epoch 004 train box=0.327 obj=0.198 cls=0.050 npos=8489.8 val box=0.347 obj=0.316 cls=0.268 vloss=6.954 mAP50=0.545 mAP75=0.140 202.6s
+epoch 005 train box=0.308 obj=0.181 cls=0.036 npos=8489.8 val box=0.307 obj=0.186 cls=0.100 vloss=5.457 mAP50=0.702 mAP75=0.217 162.6s
+epoch 006 train box=0.288 obj=0.169 cls=0.027 npos=8489.8 val box=0.327 obj=0.240 cls=0.212 vloss=6.267 mAP50=0.591 mAP75=0.167 170.8s
+epoch 007 train box=0.273 obj=0.160 cls=0.019 npos=8489.8 val box=0.279 obj=0.168 cls=0.134 vloss=5.095 mAP50=0.717 mAP75=0.213 175.7s
+epoch 008 train box=0.262 obj=0.150 cls=0.017 npos=8489.8 val box=0.273 obj=0.176 cls=0.122 vloss=4.986 mAP50=0.756 mAP75=0.262 174.8s
+epoch 009 train box=0.255 obj=0.145 cls=0.018 npos=8489.8 val box=0.264 obj=0.180 cls=0.160 vloss=4.982 mAP50=0.731 mAP75=0.258 160.2s
+epoch 010 train box=0.248 obj=0.138 cls=0.010 npos=8489.8 val box=0.266 obj=0.169 cls=0.108 vloss=4.825 mAP50=0.722 mAP75=0.244 172.8s
+epoch 011 train box=0.243 obj=0.131 cls=0.006 npos=8489.8 val box=0.251 obj=0.170 cls=0.121 vloss=4.641 mAP50=0.781 mAP75=0.283 156.2s
+epoch 012 train box=0.237 obj=0.124 cls=0.005 npos=8489.8 val box=0.253 obj=0.177 cls=0.132 vloss=4.716 mAP50=0.721 mAP75=0.249 150.5s
+epoch 013 train box=0.233 obj=0.121 cls=0.003 npos=8489.8 val box=0.253 obj=0.182 cls=0.137 vloss=4.756 mAP50=0.744 mAP75=0.268 131.2s
+epoch 014 train box=0.230 obj=0.115 cls=0.004 npos=8489.8 val box=0.256 obj=0.180 cls=0.129 vloss=4.771 mAP50=0.771 mAP75=0.275 149.7s
