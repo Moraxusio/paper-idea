@@ -530,3 +530,30 @@ Test concat: mAP50 **0.740** / mAP75 **0.259**. Reports: `logs/step12_eval_Econc
 ### Decision
 **Do not ship concat.** Occupancy-gated stays default. Concat hurts AM-DSB/PSK/Morse; overall below gated by 8.8 mAP50. Next: E add (running), then D mag+pspec.
 
+## 2026-09-03 — IDEA E add vs gated F_scratch (ADD competitive, keep gated)
+
+Same from-scratch loc extras, 30 epochs, `--fusion add` (shared loc/cls sum, no occupancy gate). Best epoch **29**. Log: `logs/step12_train_E_add.log`.
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --dual --fusion add --epochs 30 --batch 8 --imgsz 512 --out outputs/train_E_add
+```
+
+Val gated F_scratch vs add:
+
+| class | F_scratch AP50 | add AP50 | Δ | F_scratch AP75 | add AP75 |
+|---|---|---|---|---|---|
+| 2FSK | 0.736 | 0.738 | +0.002 | 0.109 | 0.111 |
+| 4FSK | 0.738 | 0.758 | +0.020 | 0.111 | 0.170 |
+| 8-Tone | 0.906 | 0.924 | +0.018 | 0.347 | 0.388 |
+| 16-Tone | 1.000 | 0.998 | -0.002 | 0.540 | 0.631 |
+| GMSK | 0.699 | **0.733** | +0.034 | 0.071 | 0.095 |
+| FM | 0.908 | 0.886 | -0.022 | 0.741 | 0.719 |
+| AM-DSB | 0.906 | 0.907 | +0.001 | 0.480 | 0.528 |
+| Morse | 0.619 | 0.618 | -0.001 | 0.081 | 0.098 |
+| PSK | 0.969 | 0.976 | +0.007 | 0.519 | **0.716** |
+| **mAP** | **0.831** | **0.838** | **+0.007** | **0.333** | **0.384** |
+
+Test add: mAP50 **0.838** / mAP75 **0.382** (gated test 0.831 / 0.362). Reports: `logs/step12_eval_Eadd_{val,test}.json`.
+
+### Decision
+ADD is **not** a failed fusion: it slightly beats gated on mAP50 and **+0.051 mAP75** (PSK AP75 0.519→0.716). Official dual stays **occupancy-gated F_scratch** — IDEA is “phase only inside energy,” not max mAP. Concat stays rejected. Next: D mag+pspec (running).
+
