@@ -1,0 +1,45 @@
+{
+  "ckpt": "outputs/train_F_scratch/best.pt",
+  "split": "test",
+  "dual": true,
+  "p2": false,
+  "pem_only": false,
+  "phase_subdir": "image",
+  "epoch": 27,
+  "n_images": 400,
+  "mAP50": 0.8311,
+  "mAP75": 0.3616,
+  "AP50": {
+    "2FSK": 0.7214,
+    "4FSK": 0.7977,
+    "8-Tone": 0.8745,
+    "16-Tone": 0.9914,
+    "GMSK": 0.7235,
+    "FM": 0.9319,
+    "AM-DSB": 0.9183,
+    "Morse": 0.5922,
+    "PSK": 0.9291
+  },
+  "AP75": {
+    "2FSK": 0.1246,
+    "4FSK": 0.1374,
+    "8-Tone": 0.2933,
+    "16-Tone": 0.4789,
+    "GMSK": 0.1031,
+    "FM": 0.8063,
+    "AM-DSB": 0.6061,
+    "Morse": 0.1503,
+    "PSK": 0.5548
+  },
+  "n_gt": {
+    "2FSK": 235,
+    "4FSK": 247,
+    "8-Tone": 217,
+    "16-Tone": 210,
+    "GMSK": 234,
+    "FM": 205,
+    "AM-DSB": 212,
+    "Morse": 246,
+    "PSK": 200
+  }
+}

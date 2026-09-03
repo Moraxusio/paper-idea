@@ -58,6 +58,12 @@ def main() -> None:
         help="dual second-stream folder under data/processed (image=PEM, wrap=wrapping phase)",
     )
     parser.add_argument("--p2", action="store_true", help="add stride-2 P2 head for thin boxes")
+    parser.add_argument(
+        "--fusion",
+        choices=("gated", "concat", "add"),
+        default="gated",
+        help="IDEA E: occupancy-gated (default) vs concat/ADD mid fusion",
+    )
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--eval-every", type=int, default=1)
     parser.add_argument("--weights", type=Path, default=None)
@@ -90,7 +96,7 @@ def main() -> None:
         val_ds, batch_size=args.batch, shuffle=False, num_workers=args.workers, collate_fn=collate
     )
 
-    model = MPFADet(nc=9, dual=args.dual, p2=args.p2).to(device)
+    model = MPFADet(nc=9, dual=args.dual, p2=args.p2, fusion=args.fusion).to(device)
     if args.weights is not None:
         ckpt0 = torch.load(args.weights, map_location=device, weights_only=False)
         sd = ckpt0["model"]
@@ -106,6 +112,7 @@ def main() -> None:
     n_params = sum(p.numel() for p in model.parameters())
     print(
         f"python={sys.executable} device={device} dual={args.dual} p2={args.p2} pem_only={args.pem_only} "
+        f"fusion={args.fusion} phase_subdir={args.phase_subdir} "
         f"params={n_params/1e6:.2f}M strides={model.strides} train={len(train_ds)} val={len(val_ds)}"
     )
 

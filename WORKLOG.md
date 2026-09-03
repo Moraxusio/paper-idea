@@ -459,3 +459,34 @@ Test: F_hw 0.808 / 0.346 → C **0.831 / 0.354**. Reports: `logs/step10_eval_C_{
 - **Do not ship wrap as official.** Official stays **F_hw** (`outputs/train_F_hw/best.pt`, PEM). C is the wrapping baseline, not a replacement.
 - Fair PEM control still missing: from-scratch `--dual` 30 ep with the same loc recipe (`outputs/train_F_scratch`). Then D (P-spectrogram) and E (concat/ADD vs gated).
 
+## 2026-09-03 — F_scratch: fair PEM dual (from scratch, loc extras)
+
+Same recipe as C: in-box multi-pos + height-weighted DIoU, 30 epochs, no F→F_loc→F_hw sequential finetune.
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --dual --epochs 30 --batch 8 --imgsz 512 --out outputs/train_F_scratch
+```
+Best epoch **27** by mAP50+mAP75. Log: `logs/step11_train_F_scratch.log`.
+
+### Val A / B / C / F_hw / F_scratch
+
+| class | A | B PEM-only | C wrap | F_hw seq | **F_scratch** |
+|---|---|---|---|---|---|
+| 2FSK | 0.456 | 0.671 | 0.719 | 0.713 | **0.736** |
+| 4FSK | 0.516 | 0.785 | 0.749 | **0.781** | 0.738 |
+| 8-Tone | 0.697 | 0.799 | 0.907 | 0.791 | 0.906 |
+| 16-Tone | 0.892 | 0.993 | 0.994 | 0.846 | **1.000** |
+| GMSK | 0.444 | 0.605 | 0.702 | **0.765** | 0.699 |
+| FM | 0.895 | 0.757 | 0.921 | **0.976** | 0.908 |
+| AM-DSB | 0.788 | 0.837 | 0.900 | **0.924** | 0.906 |
+| Morse | 0.108 | 0.550 | 0.593 | 0.590 | **0.619** |
+| PSK | 0.898 | 0.699 | **0.983** | 0.956 | 0.969 |
+| **mAP50** | 0.633 | 0.744 | 0.830 | 0.816 | **0.831** |
+| **mAP75** | 0.188 | 0.262 | **0.357** | 0.330 | 0.333 |
+
+Test F_scratch: mAP50 **0.831** / mAP75 **0.362**. Reports: `logs/step11_eval_Fscratch_{val,test}.json`.
+
+### Reading
+- From-scratch loc extras recover **16-Tone/8-Tone** that sequential F_hw lost (0.846→1.000 / 0.791→0.906). Overall F_scratch > F_hw. **Official dual PEM is now F_scratch** (`outputs/train_F_scratch/best.pt`). F_hw is the sequential-finetune variant (better GMSK/FM, worse multi-tone).
+- Fair wrap vs PEM: C 0.830/0.357 vs F_scratch 0.831/0.333 val. **Overall tied.** PEM wins Morse/2FSK; wrap slightly wins FM/PSK/val mAP75. Wrapping occupancy is not a collapsed stream. Still **do not ship wrap**: PEM is the interpretable event map; C is the wrapping control.
+- Next: **D** mag+P-spectrogram (I/Q log-mag second stream); **E** concat/ADD vs gated on PEM.
+

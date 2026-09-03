@@ -31,7 +31,7 @@ from mpfadet.config import (
 )
 from mpfadet.geometry import PNG_H, PNG_W
 from mpfadet.io_iq import list_sample_ids, read_iq_wav
-from mpfadet.pem import build_complex, compute_fields, fields_to_pem, fields_to_wrap
+from mpfadet.pem import build_complex, compute_fields, fields_to_pem, fields_to_wrap, logmag_image
 
 
 def generate_one(raw_dir: Path, sid: str, out_path: Path, mode: str = "pem") -> dict:
@@ -48,6 +48,8 @@ def generate_one(raw_dir: Path, sid: str, out_path: Path, mode: str = "pem") -> 
             gate_alpha=GATE_ALPHA,
             gate_percentile=GATE_PERCENTILE,
         )
+    elif mode == "pspec":
+        img = logmag_image(fields["logmag"], PNG_H, PNG_W, flip_freq=FLIP_FREQ)
     else:
         img = fields_to_pem(
             fields,
@@ -76,12 +78,16 @@ def main() -> None:
     parser.add_argument("--report", type=Path, default=ROOT / "logs/step02_generate_report.json")
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--skip-existing", action="store_true")
-    parser.add_argument("--mode", choices=("pem", "wrap"), default="pem")
+    parser.add_argument("--mode", choices=("pem", "wrap", "pspec"), default="pem")
     args = parser.parse_args()
     if args.mode == "wrap" and args.out_dir == ROOT / "data/processed/phase":
         args.out_dir = ROOT / "data/processed/wrap"
         if args.report == ROOT / "logs/step02_generate_report.json":
             args.report = ROOT / "logs/step10_generate_wrap_report.json"
+    if args.mode == "pspec" and args.out_dir == ROOT / "data/processed/phase":
+        args.out_dir = ROOT / "data/processed/pspec"
+        if args.report == ROOT / "logs/step02_generate_report.json":
+            args.report = ROOT / "logs/step11_generate_pspec_report.json"
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
     ids = list_sample_ids(args.raw_dir)

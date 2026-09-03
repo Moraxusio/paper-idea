@@ -88,12 +88,39 @@ class OccupancyGatedFusion(nn.Module):
         self.alpha = nn.Parameter(torch.tensor(alpha_init))
         self.beta = nn.Parameter(torch.tensor(beta_init))
 
-    def forward(self, f_m: torch.Tensor, f_p: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    def forward(self, f_m: torch.Tensor, f_p: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor | None]:
         g = torch.sigmoid(self.gate(f_m))
         f_pg = f_p * g
         f_loc = f_m + self.alpha * self.psi(f_pg)
         f_cls = f_pg + self.beta * self.phi(f_m)
         return f_loc, f_cls, g
+
+
+class ConcatFusion(nn.Module):
+    def __init__(self, c: int):
+        super().__init__()
+        self.mix_loc = nn.Conv2d(2 * c, c, 1, bias=False)
+        self.mix_cls = nn.Conv2d(2 * c, c, 1, bias=False)
+
+    def forward(self, f_m: torch.Tensor, f_p: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor | None]:
+        cat = torch.cat([f_m, f_p], dim=1)
+        return self.mix_loc(cat), self.mix_cls(cat), None
+
+
+class AddFusion(nn.Module):
+    def forward(self, f_m: torch.Tensor, f_p: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor | None]:
+        s = f_m + f_p
+        return s, s, None
+
+
+def make_fusion(c: int, mode: str = "gated") -> nn.Module:
+    if mode == "gated":
+        return OccupancyGatedFusion(c)
+    if mode == "concat":
+        return ConcatFusion(c)
+    if mode == "add":
+        return AddFusion()
+    raise ValueError(f"unknown fusion mode {mode}")
 
 
 class DetectHead(nn.Module):
@@ -106,7 +133,7 @@ class DetectHead(nn.Module):
         self.cls = nn.ModuleList()
         for c in ch:
             self.loc.append(
-                nn.Sequential(conv_bn_act(c, c, 3), nn.Conv2d(c, 5, 1))  # l,t,r,b + obj
+                nn.Sequential(conv_bn_act(c, c, 3), nn.Conv2d(c, 5, 1))
             )
             self.cls.append(
                 nn.Sequential(conv_bn_act(c, c, 3), nn.Conv2d(c, nc, 1))
@@ -120,16 +147,16 @@ class DetectHead(nn.Module):
 
 
 class MPFADet(nn.Module):
-    def __init__(self, nc: int = 9, dual: bool = True, ch=(32, 64, 128, 256), p2: bool = False):
+    def __init__(self, nc: int = 9, dual: bool = True, ch=(32, 64, 128, 256), p2: bool = False, fusion: str = "gated"):
         super().__init__()
         self.dual = dual
         self.p2 = p2
+        self.fusion = fusion
         self.mag = MagNet(3, ch)
         self.phase = PhaseNet(3, ch) if dual else None
         head_ch = ch if p2 else ch[1:]
-        self.fuse = nn.ModuleList([OccupancyGatedFusion(c) for c in head_ch]) if dual else None
+        self.fuse = nn.ModuleList([make_fusion(c, fusion) for c in head_ch]) if dual else None
         self.head = DetectHead(head_ch, nc)
-        # stem is stride 2; s2/s3/s4 add stride 2 each → 2/4/8/16 if p2 else 4/8/16
         self.strides = (2, 4, 8, 16) if p2 else (4, 8, 16)
 
     def _levels(self, feats: list[torch.Tensor]) -> list[torch.Tensor]:

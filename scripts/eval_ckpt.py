@@ -34,8 +34,9 @@ def run(ckpt_path: Path, split: str, imgsz: int, batch: int, conf_th: float) -> 
     p2 = bool(args.get("p2", False)) or len(strides) == 4
     pem_only = bool(args.get("pem_only", False))
     phase_subdir = str(args.get("phase_subdir") or "image")
+    fusion = str(args.get("fusion") or "gated")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = MPFADet(nc=9, dual=dual, p2=p2)
+    model = MPFADet(nc=9, dual=dual, p2=p2, fusion=fusion)
     model.load_state_dict(ckpt["model"])
     model.to(device).eval()
     ds = MagPhaseDataset(
@@ -68,6 +69,7 @@ def run(ckpt_path: Path, split: str, imgsz: int, batch: int, conf_th: float) -> 
         "p2": p2,
         "pem_only": pem_only,
         "phase_subdir": phase_subdir,
+        "fusion": fusion,
         "epoch": ckpt.get("epoch"),
         "n_images": len(ds),
         "mAP50": round(m50["mAP50"], 4),
