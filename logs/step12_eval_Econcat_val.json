@@ -1,0 +1,47 @@
+{
+  "ckpt": "outputs/train_E_concat/best.pt",
+  "split": "val",
+  "dual": true,
+  "p2": false,
+  "pem_only": false,
+  "phase_subdir": "image",
+  "fusion": "concat",
+  "phase_mask": "111",
+  "epoch": 13,
+  "n_images": 400,
+  "mAP50": 0.7427,
+  "mAP75": 0.2699,
+  "AP50": {
+    "2FSK": 0.6804,
+    "4FSK": 0.6949,
+    "8-Tone": 0.8831,
+    "16-Tone": 0.9806,
+    "GMSK": 0.6419,
+    "FM": 0.9628,
+    "AM-DSB": 0.6136,
+    "Morse": 0.5127,
+    "PSK": 0.7143
+  },
+  "AP75": {
+    "2FSK": 0.0972,
+    "4FSK": 0.0595,
+    "8-Tone": 0.339,
+    "16-Tone": 0.4681,
+    "GMSK": 0.1052,
+    "FM": 0.6835,
+    "AM-DSB": 0.3075,
+    "Morse": 0.0439,
+    "PSK": 0.325
+  },
+  "n_gt": {
+    "2FSK": 242,
+    "4FSK": 232,
+    "8-Tone": 209,
+    "16-Tone": 212,
+    "GMSK": 246,
+    "FM": 196,
+    "AM-DSB": 218,
+    "Morse": 246,
+    "PSK": 208
+  }
+}

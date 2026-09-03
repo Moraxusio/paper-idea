@@ -1,0 +1,32 @@
+python=/home/finnwe/miniconda3/envs/mpfadet/bin/python device=cuda dual=True p2=False pem_only=False fusion=concat phase_subdir=image params=3.05M strides=(4, 8, 16) train=3200 val=400
+epoch 001 train box=0.581 obj=0.403 cls=0.315 npos=8489.8 val box=0.421 obj=0.290 cls=0.257 vloss=7.948 mAP50=0.509 mAP75=0.108 171.3s
+epoch 002 train box=0.383 obj=0.240 cls=0.102 npos=8489.8 val box=0.374 obj=0.269 cls=0.142 vloss=6.838 mAP50=0.531 mAP75=0.088 167.9s
+epoch 003 train box=0.343 obj=0.200 cls=0.061 npos=8489.8 val box=0.360 obj=0.310 cls=0.768 vloss=8.641 mAP50=0.471 mAP75=0.099 166.9s
+epoch 004 train box=0.320 obj=0.181 cls=0.043 npos=8489.8 val box=0.312 obj=0.170 cls=0.081 vloss=5.435 mAP50=0.696 mAP75=0.203 139.2s
+epoch 005 train box=0.295 obj=0.164 cls=0.034 npos=8489.8 val box=0.295 obj=0.167 cls=0.108 vloss=5.254 mAP50=0.701 mAP75=0.212 142.7s
+epoch 006 train box=0.278 obj=0.154 cls=0.024 npos=8489.8 val box=0.277 obj=0.170 cls=0.072 vloss=4.880 mAP50=0.730 mAP75=0.226 140.9s
+epoch 007 train box=0.266 obj=0.144 cls=0.020 npos=8489.8 val box=0.273 obj=0.153 cls=0.090 vloss=4.818 mAP50=0.675 mAP75=0.209 135.9s
+epoch 008 train box=0.257 obj=0.134 cls=0.015 npos=8489.8 val box=0.273 obj=0.175 cls=0.152 vloss=5.077 mAP50=0.685 mAP75=0.232 135.3s
+epoch 009 train box=0.251 obj=0.130 cls=0.013 npos=8489.8 val box=0.251 obj=0.133 cls=0.095 vloss=4.452 mAP50=0.732 mAP75=0.260 135.2s
+epoch 010 train box=0.245 obj=0.122 cls=0.011 npos=8489.8 val box=0.253 obj=0.139 cls=0.089 vloss=4.484 mAP50=0.719 mAP75=0.252 131.4s
+epoch 011 train box=0.240 obj=0.117 cls=0.007 npos=8489.8 val box=0.247 obj=0.138 cls=0.129 vloss=4.498 mAP50=0.687 mAP75=0.231 123.1s
+epoch 012 train box=0.236 obj=0.112 cls=0.008 npos=8489.8 val box=0.245 obj=0.143 cls=0.094 vloss=4.384 mAP50=0.724 mAP75=0.266 125.4s
+epoch 013 train box=0.233 obj=0.109 cls=0.010 npos=8489.8 val box=0.245 obj=0.134 cls=0.082 vloss=4.327 mAP50=0.743 mAP75=0.270 127.1s
+epoch 014 train box=0.228 obj=0.102 cls=0.005 npos=8489.8 val box=0.244 obj=0.129 cls=0.073 vloss=4.266 mAP50=0.718 mAP75=0.267 136.9s
+epoch 015 train box=0.224 obj=0.099 cls=0.001 npos=8489.8 val box=0.236 obj=0.120 cls=0.071 vloss=4.118 mAP50=0.726 mAP75=0.253 126.5s
+epoch 016 train box=0.221 obj=0.094 cls=0.001 npos=8489.8 val box=0.235 obj=0.134 cls=0.076 vloss=4.160 mAP50=0.717 mAP75=0.226 128.8s
+epoch 017 train box=0.218 obj=0.090 cls=0.001 npos=8489.8 val box=0.232 obj=0.134 cls=0.080 vloss=4.131 mAP50=0.727 mAP75=0.264 130.7s
+epoch 018 train box=0.215 obj=0.089 cls=0.001 npos=8489.8 val box=0.230 obj=0.133 cls=0.072 vloss=4.064 mAP50=0.740 mAP75=0.257 128.3s
+epoch 019 train box=0.211 obj=0.085 cls=0.001 npos=8489.8 val box=0.232 obj=0.127 cls=0.082 vloss=4.115 mAP50=0.700 mAP75=0.255 128.1s
+epoch 020 train box=0.208 obj=0.083 cls=0.001 npos=8489.8 val box=0.226 obj=0.132 cls=0.075 vloss=4.015 mAP50=0.718 mAP75=0.255 128.8s
+epoch 021 train box=0.205 obj=0.081 cls=0.000 npos=8489.8 val box=0.228 obj=0.139 cls=0.075 vloss=4.064 mAP50=0.723 mAP75=0.257 128.5s
+epoch 022 train box=0.202 obj=0.079 cls=0.000 npos=8489.8 val box=0.226 obj=0.130 cls=0.078 vloss=4.012 mAP50=0.719 mAP75=0.263 126.6s
+epoch 023 train box=0.200 obj=0.077 cls=0.000 npos=8489.8 val box=0.224 obj=0.122 cls=0.072 vloss=3.950 mAP50=0.715 mAP75=0.263 126.9s
+epoch 024 train box=0.197 obj=0.076 cls=0.000 npos=8489.8 val box=0.224 obj=0.130 cls=0.075 vloss=3.973 mAP50=0.719 mAP75=0.266 127.6s
+epoch 025 train box=0.196 obj=0.076 cls=0.000 npos=8489.8 val box=0.223 obj=0.151 cls=0.075 vloss=4.024 mAP50=0.724 mAP75=0.268 126.5s
+epoch 026 train box=0.194 obj=0.075 cls=0.000 npos=8489.8 val box=0.223 obj=0.131 cls=0.077 vloss=3.972 mAP50=0.719 mAP75=0.255 128.0s
+epoch 027 train box=0.193 obj=0.074 cls=0.000 npos=8489.8 val box=0.222 obj=0.139 cls=0.077 vloss=3.984 mAP50=0.722 mAP75=0.258 127.4s
+epoch 028 train box=0.192 obj=0.074 cls=0.000 npos=8489.8 val box=0.222 obj=0.139 cls=0.076 vloss=3.981 mAP50=0.723 mAP75=0.267 127.4s
+epoch 029 train box=0.192 obj=0.073 cls=0.000 npos=8489.8 val box=0.222 obj=0.147 cls=0.076 vloss=4.000 mAP50=0.724 mAP75=0.262 127.4s
+epoch 030 train box=0.191 obj=0.073 cls=0.000 npos=8489.8 val box=0.222 obj=0.139 cls=0.076 vloss=3.975 mAP50=0.723 mAP75=0.264 128.3s
+best 1.01258350453443 wrote outputs/train_E_concat

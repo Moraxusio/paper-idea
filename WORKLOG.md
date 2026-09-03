@@ -503,3 +503,30 @@ P-spectrogram (IDEA D input): 4000/4000 I/Q log-mag PNGs, 0 fail, mean RGB ≈ 9
 
 `--fusion {gated,concat,add}` and `--phase-mask` (IF/Coh/Residual) are in `train.py`. Chain after E concat: eval E concat → E add → D mag+pspec (`scripts/step12_pipeline.sh`).
 
+## 2026-09-03 — IDEA E concat vs gated F_scratch (rejected concat)
+
+Same from-scratch loc extras, 30 epochs, `--fusion concat`. Best epoch **13**. Log: `logs/step12_train_E_concat.log`.
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --dual --fusion concat --epochs 30 --batch 8 --imgsz 512 --out outputs/train_E_concat
+```
+
+Val gated F_scratch vs concat:
+
+| class | F_scratch AP50 | concat AP50 | Δ | F_scratch AP75 | concat AP75 |
+|---|---|---|---|---|---|
+| 2FSK | 0.736 | 0.680 | -0.056 | 0.109 | 0.097 |
+| 4FSK | 0.738 | 0.695 | -0.043 | 0.111 | 0.060 |
+| 8-Tone | 0.906 | 0.883 | -0.023 | 0.347 | 0.339 |
+| 16-Tone | 1.000 | 0.981 | -0.019 | 0.540 | 0.468 |
+| GMSK | 0.699 | 0.642 | -0.057 | 0.071 | 0.105 |
+| FM | 0.908 | **0.963** | +0.055 | 0.741 | 0.684 |
+| AM-DSB | 0.906 | 0.614 | **-0.292** | 0.480 | 0.308 |
+| Morse | 0.619 | 0.513 | -0.107 | 0.081 | 0.044 |
+| PSK | 0.969 | 0.714 | **-0.255** | 0.519 | 0.325 |
+| **mAP** | **0.831** | **0.743** | **-0.088** | **0.333** | **0.270** |
+
+Test concat: mAP50 **0.740** / mAP75 **0.259**. Reports: `logs/step12_eval_Econcat_{val,test}.json`.
+
+### Decision
+**Do not ship concat.** Occupancy-gated stays default. Concat hurts AM-DSB/PSK/Morse; overall below gated by 8.8 mAP50. Next: E add (running), then D mag+pspec.
+
