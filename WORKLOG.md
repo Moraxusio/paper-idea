@@ -557,3 +557,30 @@ Test add: mAP50 **0.838** / mAP75 **0.382** (gated test 0.831 / 0.362). Reports:
 ### Decision
 ADD is **not** a failed fusion: it slightly beats gated on mAP50 and **+0.051 mAP75** (PSK AP75 0.519→0.716). Official dual stays **occupancy-gated F_scratch** — IDEA is “phase only inside energy,” not max mAP. Concat stays rejected. Next: D mag+pspec (running).
 
+## 2026-09-03 — IDEA D mag + P-spectrogram (redundant 2nd mag; keep PEM)
+
+Same from-scratch loc extras, 30 epochs, occupancy-gated, `--phase-subdir pspec`. Best epoch **28**. Log: `logs/step13_train_D.log`.
+```
+/home/finnwe/miniconda3/envs/mpfadet/bin/python scripts/train.py --dual --phase-subdir pspec --epochs 30 --batch 8 --imgsz 512 --out outputs/train_D
+```
+
+Val gated F_scratch (PEM) vs D (P-spectrogram):
+
+| class | F_scratch AP50 | D AP50 | Δ | F_scratch AP75 | D AP75 |
+|---|---|---|---|---|---|
+| 2FSK | 0.736 | 0.731 | -0.005 | 0.109 | 0.140 |
+| 4FSK | 0.738 | **0.776** | +0.038 | 0.111 | 0.137 |
+| 8-Tone | 0.906 | 0.871 | -0.035 | 0.347 | 0.375 |
+| 16-Tone | **1.000** | 0.927 | **-0.073** | 0.540 | 0.505 |
+| GMSK | 0.699 | 0.699 | +0.001 | 0.071 | 0.099 |
+| FM | 0.908 | 0.896 | -0.012 | 0.741 | 0.694 |
+| AM-DSB | 0.906 | 0.923 | +0.017 | 0.480 | 0.498 |
+| Morse | 0.619 | **0.664** | +0.045 | 0.081 | 0.163 |
+| PSK | 0.969 | 0.963 | -0.006 | 0.519 | 0.632 |
+| **mAP** | **0.831** | **0.828** | **-0.003** | **0.333** | **0.360** |
+
+Test D: mAP50 **0.828** / mAP75 **0.351** (F_scratch test 0.831 / 0.362). Reports: `logs/step13_eval_D_{val,test}.json`.
+
+### Decision
+**Do not ship P-spectrogram.** Overall nearly tied with PEM, so D is not a collapsed stream — it is a **second magnitude** stream. 16-Tone/8-Tone drop (ridge density needs IF, not extra log-mag). Morse/AM-DSB rise (energy occupancy). Official second stream stays **PEM**. Next: PEM channel ablation (`scripts/step14_pem_ablate.sh`).
+

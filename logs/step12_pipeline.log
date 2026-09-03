@@ -1,0 +1,9 @@
+2026-09-03 09:12:09 pipeline start, wait E concat
+2026-09-03 09:12:09 pipeline start, wait E concat
+2026-09-03 09:12:50 pipeline start, wait E concat
+---restart---
+2026-09-03 09:18:20 pipeline restart, wait E concat pid-pattern
+2026-09-03 09:55:41 eval E concat
+2026-09-03 09:57:01 train E add
+2026-09-03 11:03:14 train D mag+pspec
+2026-09-03 12:08:47 PIPELINE_DONE
