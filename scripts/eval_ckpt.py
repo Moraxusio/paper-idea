@@ -35,6 +35,7 @@ def run(ckpt_path: Path, split: str, imgsz: int, batch: int, conf_th: float) -> 
     pem_only = bool(args.get("pem_only", False))
     phase_subdir = str(args.get("phase_subdir") or "image")
     fusion = str(args.get("fusion") or "gated")
+    phase_mask = str(args.get("phase_mask") or "111")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = MPFADet(nc=9, dual=dual, p2=p2, fusion=fusion)
     model.load_state_dict(ckpt["model"])
@@ -46,6 +47,7 @@ def run(ckpt_path: Path, split: str, imgsz: int, batch: int, conf_th: float) -> 
         dual=dual,
         mag_from_phase=pem_only,
         phase_subdir=phase_subdir,
+        phase_mask=phase_mask,
     )
     loader = DataLoader(ds, batch_size=batch, shuffle=False, num_workers=2, collate_fn=collate)
     all_dets, all_tgts = [], []
@@ -70,6 +72,7 @@ def run(ckpt_path: Path, split: str, imgsz: int, batch: int, conf_th: float) -> 
         "pem_only": pem_only,
         "phase_subdir": phase_subdir,
         "fusion": fusion,
+        "phase_mask": phase_mask,
         "epoch": ckpt.get("epoch"),
         "n_images": len(ds),
         "mAP50": round(m50["mAP50"], 4),

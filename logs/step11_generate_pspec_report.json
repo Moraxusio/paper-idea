@@ -1,0 +1,23 @@
+{
+  "n_ids": 4000,
+  "n_ok": 3954,
+  "n_skip": 46,
+  "n_fail": 0,
+  "failed": [],
+  "elapsed_sec": 1697.9,
+  "out_dir": "/home/finnwe/project/paper/MPFADet/data/processed/pspec",
+  "settings": {
+    "n_fft": 1024,
+    "hop": 256,
+    "swap": false,
+    "conj": false,
+    "fftshift": false,
+    "flip_freq": true,
+    "mode": "pspec"
+  },
+  "mean_rgb": [
+    90.6187623541811,
+    90.6187623541811,
+    90.6187623541811
+  ]
+}

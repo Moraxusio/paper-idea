@@ -55,7 +55,12 @@ def main() -> None:
     parser.add_argument(
         "--phase-subdir",
         default="image",
-        help="dual second-stream folder under data/processed (image=PEM, wrap=wrapping phase)",
+        help="dual second-stream folder under data/processed (image=PEM, wrap=wrapping phase, pspec=P-spectrogram)",
+    )
+    parser.add_argument(
+        "--phase-mask",
+        default="111",
+        help="PEM channel mask RGB=IF/Coh/Residual (e.g. 100 IF-only, 110 IF+Coh)",
     )
     parser.add_argument("--p2", action="store_true", help="add stride-2 P2 head for thin boxes")
     parser.add_argument(
@@ -80,6 +85,7 @@ def main() -> None:
         dual=args.dual,
         mag_from_phase=args.pem_only,
         phase_subdir=args.phase_subdir,
+        phase_mask=args.phase_mask,
     )
     val_ds = MagPhaseDataset(
         args.data,
@@ -88,6 +94,7 @@ def main() -> None:
         dual=args.dual,
         mag_from_phase=args.pem_only,
         phase_subdir=args.phase_subdir,
+        phase_mask=args.phase_mask,
     )
     train_loader = DataLoader(
         train_ds, batch_size=args.batch, shuffle=True, num_workers=args.workers, collate_fn=collate

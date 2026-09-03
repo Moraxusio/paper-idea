@@ -7,3 +7,5 @@ __pycache__/
 outputs/
 data/processed/
 .DS_Store
+logs/*.lock
+*.nohup

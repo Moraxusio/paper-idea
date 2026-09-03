@@ -44,6 +44,7 @@ class MagPhaseDataset(Dataset):
         dual: bool = False,
         mag_from_phase: bool = False,
         phase_subdir: str = "image",
+        phase_mask: str = "111",
     ):
         self.root = Path(root)
         self.split = split
@@ -51,6 +52,9 @@ class MagPhaseDataset(Dataset):
         self.dual = dual
         self.mag_from_phase = mag_from_phase
         self.phase_subdir = phase_subdir
+        if len(phase_mask) != 3 or any(c not in "01" for c in phase_mask):
+            raise ValueError(f"phase_mask must be 3 chars of 0/1, got {phase_mask}")
+        self.phase_mask = phase_mask
         mag_dir = self.root / ("image" if mag_from_phase else "images") / split
         self.ids = sorted(p.stem for p in mag_dir.glob("*.png"))
         if not self.ids:
@@ -72,6 +76,9 @@ class MagPhaseDataset(Dataset):
             phase, *_ = letterbox_rgb(
                 self.root / self.phase_subdir / self.split / f"{sid}.png", self.imgsz
             )
+            if self.phase_mask != "111":
+                m = torch.tensor([float(c) for c in self.phase_mask], dtype=phase.dtype).view(3, 1, 1)
+                phase = phase * m
         labels = []
         lab_path = self.root / "labels" / self.split / f"{sid}.txt"
         if lab_path.exists():

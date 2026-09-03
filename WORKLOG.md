@@ -490,3 +490,16 @@ Test F_scratch: mAP50 **0.831** / mAP75 **0.362**. Reports: `logs/step11_eval_Fs
 - Fair wrap vs PEM: C 0.830/0.357 vs F_scratch 0.831/0.333 val. **Overall tied.** PEM wins Morse/2FSK; wrap slightly wins FM/PSK/val mAP75. Wrapping occupancy is not a collapsed stream. Still **do not ship wrap**: PEM is the interpretable event map; C is the wrapping control.
 - Next: **D** mag+P-spectrogram (I/Q log-mag second stream); **E** concat/ADD vs gated on PEM.
 
+## 2026-09-03 — workspace cleanup + P-spectrogram linked; E/D pipeline
+
+Killed stuck processes that self-matched `pgrep -f`:
+- pspec waiter (never reached LINK_DONE)
+- old `step12_pipeline.sh` (would hang on generate_pem wait)
+
+Kept GPU job: `train_E_concat` (concat fusion, 30 ep from scratch).
+Removed `logs/step12_pipeline.lock` leftover and duplicate `logs/step11_eval_Fscratch.out`.
+
+P-spectrogram (IDEA D input): 4000/4000 I/Q log-mag PNGs, 0 fail, mean RGB ≈ 90.6. Linked train/val/test 3200/400/400, missing 0. Do **not** rerun `step03_make_yolo.py`.
+
+`--fusion {gated,concat,add}` and `--phase-mask` (IF/Coh/Residual) are in `train.py`. Chain after E concat: eval E concat → E add → D mag+pspec (`scripts/step12_pipeline.sh`).
+
